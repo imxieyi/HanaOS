@@ -8,7 +8,9 @@
 
 依赖工具：nasm, g++, make, xorriso, mtools, qemu
 
-推荐环境：MBR引导启动的32位Ubuntu
+~~推荐环境：MBR引导启动的32位Ubuntu~~
+
+在64位或EFI引导的系统上需要安装grub-pc才能生成iso镜像。
 
 bgimg.hpp就是张图片而已，编译完成后要占2M的空间，应该会被link到.rodata部分，嫌占空间删掉就得了。
 

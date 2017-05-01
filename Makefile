@@ -13,6 +13,7 @@ LDFLAGS	= -m elf_i386 -N
 OBJECTS	= $(BUILD)/kernel.o $(BUILD)/boot.a.o $(BUILD)/graphics.o $(BUILD)/gdt.o $(BUILD)/idt.o $(BUILD)/table_flush.a.o $(BUILD)/int_stubs.a.o $(BUILD)/isr.o $(BUILD)/irq.o $(BUILD)/asmfunc.a.o
 
 default:
+	mkdir -p build
 	make kernel
 
 %.a.o: %.asm Makefile
@@ -26,10 +27,10 @@ kernel: boot.a.o asmfunc.a.o isr.o irq.o table_flush.a.o int_stubs.a.o graphics.
 
 iso: kernel
 	cp $(BUILD)/kernel $(ISODIR)/boot/
-	grub-mkrescue -o $(ISOFILE) $(ISODIR)
+	grub-mkrescue -d /usr/lib/grub/i386-pc -o $(ISOFILE) $(ISODIR)
 
 run: iso
-	qemu-system-i386 -vga std -cdrom $(ISOFILE)
+	$(QEMU) -cdrom $(ISOFILE)
 
 clean:
 	rm $(BUILD)/*
