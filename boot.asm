@@ -40,3 +40,4 @@ start:
 	push ebx
 ;	add esp,8
     call kernel_main
+    jmp $

@@ -8,23 +8,20 @@ ISODIR	= isodir
 ISOFILE	= $(BUILD)/hanaos.iso
 EFIBIOS	= /usr/share/ovmf/OVMF.fd
 CCFLAGS	= -nostdlib -nodefaultlibs -lgcc -m32
-CXXFLAGS= -ffreestanding -fno-exceptions -fno-rtti -m32
+CXXFLAGS= -ffreestanding -fno-exceptions -fno-rtti -m32 -fpermissive -Iinclude
 LDFLAGS	= -m elf_i386 -N
-OBJECTS	= $(BUILD)/kernel.o $(BUILD)/boot.o $(BUILD)/graphics.o $(BUILD)/asmfunc.o
+OBJECTS	= $(BUILD)/kernel.o $(BUILD)/boot.a.o $(BUILD)/graphics.o $(BUILD)/gdt.o $(BUILD)/idt.o $(BUILD)/table_flush.a.o $(BUILD)/int_stubs.a.o $(BUILD)/isr.o $(BUILD)/irq.o $(BUILD)/asmfunc.a.o
 
 default:
 	make kernel
 
-boot.o: boot.asm
-	$(NASM) -f elf boot.asm -o $(BUILD)/boot.o
-
-asmfunc.o: asmfunc.asm
-	$(NASM) -f elf asmfunc.asm -o $(BUILD)/asmfunc.o
+%.a.o: %.asm Makefile
+	$(NASM) -f elf $*.asm -o $(BUILD)/$*.a.o
 
 %.o: %.cpp Makefile
 	$(CXX) -c $*.cpp -o $(BUILD)/$*.o $(CXXFLAGS)
 
-kernel: boot.o asmfunc.o graphics.o kernel.o link.ld
+kernel: boot.a.o asmfunc.a.o isr.o irq.o table_flush.a.o int_stubs.a.o graphics.o gdt.o idt.o kernel.o link.ld
 	$(LD) $(OBJECTS) -T link.ld -o $(BUILD)/kernel $(LDFLAGS)
 
 iso: kernel

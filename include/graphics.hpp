@@ -1,6 +1,7 @@
 #ifndef _GRAPHICS_HPP
 #define _GRAPHICS_HPP
 #include <stdint.h>
+#include "multiboot.h"
 
 #define VGA_RGBPACK(r, g, b) ((r << 16)|(g << 8)|(b << 0))
 void setcolor(uint8_t r,uint8_t g,uint8_t b);

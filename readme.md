@@ -6,6 +6,14 @@
 
 必须用32位MBR的grub2生成镜像，否则无法获得正确的显存地址（这个坑就不要去踩了，无解），轻则切换分辨率后无显示，重则导致虚拟机崩溃。
 
-依赖包：xorriso, mtools, qemu
+依赖工具：nasm, g++, make, xorriso, mtools, qemu
+
+推荐环境：MBR引导启动的32位Ubuntu
 
 bgimg.hpp就是张图片而已，编译完成后要占2M的空间，应该会被link到.rodata部分，嫌占空间删掉就得了。
+
+5-1:折腾了大半天，中途好几次差点放弃，终于把中断处理实现了。顺便吐槽一下kernel的中断处理实现方法跟bootloader的区别非常大，OSASK的代码没啥参考价值。
+
+运行截图：
+
+![](imgs/screenshot.png)
