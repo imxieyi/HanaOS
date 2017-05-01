@@ -1,0 +1,5 @@
+build/
+isodir/boot/kernel
+.kdev4/
+*.kate-swp
+.directory
