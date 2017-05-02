@@ -10,7 +10,7 @@ EFIBIOS	= /usr/share/ovmf/OVMF.fd
 CCFLAGS	= -nostdlib -nodefaultlibs -lgcc -m32
 CXXFLAGS= -ffreestanding -fno-exceptions -fno-rtti -m32
 LDFLAGS	= -m elf_i386 -N
-OBJECTS	= $(BUILD)/kernel.o $(BUILD)/boot.o $(BUILD)/asmfunc.o
+OBJECTS	= $(BUILD)/kernel.o $(BUILD)/boot.o $(BUILD)/graphics.o $(BUILD)/asmfunc.o
 
 default:
 	make kernel
@@ -24,13 +24,14 @@ asmfunc.o: asmfunc.asm
 %.o: %.cpp Makefile
 	$(CXX) -c $*.cpp -o $(BUILD)/$*.o $(CXXFLAGS)
 
-kernel: boot.o asmfunc.o kernel.o link.ld
+kernel: boot.o asmfunc.o graphics.o kernel.o link.ld
 	$(LD) $(OBJECTS) -T link.ld -o $(BUILD)/kernel $(LDFLAGS)
 
-run: kernel
-#	$(QEMU) -kernel $(BUILD)/kernel
+iso: kernel
 	cp $(BUILD)/kernel $(ISODIR)/boot/
 	grub-mkrescue -o $(ISOFILE) $(ISODIR)
+
+run: iso
 	qemu-system-i386 -vga std -cdrom $(ISOFILE)
 
 clean:

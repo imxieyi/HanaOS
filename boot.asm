@@ -33,7 +33,6 @@ kernel_stack_top:
 section .text
 bits 32
 start:
-	cli
 	mov esp,kernel_stack_top
 	push 0
 	popf

@@ -1,6 +1,5 @@
 #ifndef _ASMFUNC_HPP
 #define _ASMFUNC_HPP
-#endif
 
 #ifdef __cplusplus
 extern "C"{
@@ -11,4 +10,5 @@ void write_mem8(int addr, int data);
 
 #ifdef __cplusplus
 }
+#endif
 #endif
