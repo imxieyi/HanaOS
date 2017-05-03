@@ -33,7 +33,7 @@ void keyboard_interrupt(registers_t regs);
 
 //mouse.c
 struct MOUSE_DEC {
-	uint8_t buf[3],phase;
+	uint32_t buf[3],phase;
 	int x,y,btn;
 };
 void enable_mouse(FIFO *fifo,int data0,struct MOUSE_DEC *mdec);

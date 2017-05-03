@@ -110,7 +110,7 @@ void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 		sprintf(str,"%d",timerctrl->count);
 		sht_win->putstring(10,50,2,0x000000,sht_win->graphics->bgcolor,str);
 		if(fifo->status()==0){
-			io_stihlt();
+			io_sti();
 		}else{
 			i=fifo->get();
 			io_sti();
@@ -118,9 +118,8 @@ void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 				sprintf(str,"%02X",i-256);
 				sht_back->putstring(50,200,2,0x0000ff,0x66ccff,str);
 			}else if(i>=512&i<=767){
-				if(mouse_decode(mdec,i-512)){
+				if(mouse_decode(mdec,i-512)|1){
 					sprintf(str,"lcr %4d %4d",mdec->x,mdec->y);
-					//sprintf(str,"%5d %5d %5d",mdec.buf[0],mdec.buf[1],mdec.buf[2]);
 					if(mdec->btn&0x01)str[0]='L';
 					if(mdec->btn&0x02)str[2]='R';
 					if(mdec->btn&0x04)str[1]='C';
