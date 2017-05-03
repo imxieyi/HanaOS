@@ -30,6 +30,7 @@
 #include <stdint.h>
 #include "idt.hpp"
 #include "asmfunc.hpp"
+#include "hanastd.hpp"
 
 idt_t       idt;
 idt_entry_t idt_entries[0x100];
@@ -44,17 +45,6 @@ set_entry(uint8_t num, uint32_t base, uint16_t sel, uint8_t flags)
     idt_entries[num].flags     = flags;  // flags | 0x60 for user-mode
 }
 
-void *
-memset(void *s, int c, uint32_t n)
-{
-    unsigned char *pos = s;
-
-    while (n--)
-        *pos++ = (unsigned char)c;
-
-    return s;
-}
-
 void
 idt_init(void)
 {
@@ -63,7 +53,7 @@ idt_init(void)
     idt.limit = (uint16_t)((uint16_t)size - 1);
     idt.base  = (uint32_t)&idt_entries;
 
-    memset(&idt_entries, 0, size);
+    hanastd::memset(&idt_entries, 0, size);
 
     /*
      * remap IRQs

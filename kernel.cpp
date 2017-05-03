@@ -6,6 +6,11 @@
 #include "gdt.hpp"
 #include "idt.hpp"
 #include "isr.hpp"
+#include "paging.hpp"
+#include "heap.hpp"
+#include "hanastd.hpp"
+using namespace hanastd;
+
 static void key_handler(registers_t regs){
 	setcolor(0x0000ff);
 	putstr("Keyboard!",2,50,200);
@@ -32,6 +37,7 @@ void timer_init(uint32_t frequency){
 #ifdef __cplusplus
 extern "C"{
 #endif
+extern uint32_t kmalloc_addr;
 void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 {
 	init_graphics((vbe_mode_info_t*)hdr->vbe_mode_info);
@@ -39,14 +45,24 @@ void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 	setcolor(0x66ccff);
 	boxfill(0,100,500,300);
 	setcolor(0xff0000);
-	putstr("ABC 123",2,50,110);
+	//Memory Test
+	unsigned int memtotal;
+	memtotal=memtest(kmalloc_addr,0xbfffffff);
+	auto *memman=(MEMMAN*)kmalloc_a(sizeof(MEMMAN));
+	memman->init();
+	memman->free(kmalloc_addr,memtotal-kmalloc_addr);
+	
+	char str[32];
+	sprintf(str,"mem %dMB free:%dKB",memtotal/0x400000*4,memman->total()/1024);
+	putstr(str,2,50,110);
 	setcolor(0x2a6927);
 	putstr("Hello HanaOS!",2,50,150);
 	gdt_init();
 	idt_init();
 	register_interrupt_handler(IRQ1,&key_handler);
-	io_sti();
 	timer_init(10);
+	paging_init();
+	io_sti();
 	for(;;)
 		io_hlt();
 }
