@@ -12,11 +12,16 @@ void GRAPHICS::init(uint32_t *vram,uint16_t width,uint16_t height,uint8_t bpp,ui
 	this->fb_stride32=fb_stride32;
 }
 
-void GRAPHICS::setcolor(uint8_t r,uint8_t g,uint8_t b){
-	color=VGA_RGBPACK(r,g,b);
+void GRAPHICS::setcolor(uint8_t r,uint8_t g,uint8_t b,uint8_t a){
+	color=VGA_RGBPACK(r,g,b,a);
 }
+
+void GRAPHICS::setcolor(uint8_t r,uint8_t g,uint8_t b){
+	color=VGA_RGBPACK(r,g,b,0xff);
+}
+
 void GRAPHICS::setcolor(uint32_t c){
-	color=c;
+	color=0xff000000|c;
 }
 
 void GRAPHICS::boxfill(int x0,int y0,int x1,int y1){
@@ -50,6 +55,20 @@ void GRAPHICS::show_bgimg(){
             r=(pixel&0xff0000)>>16;
             g=(pixel&0xff00)>>8;
             b=pixel&0xff;
-			vram[y*fb_stride32+x]=VGA_RGBPACK(r,g,b);
+			vram[y*fb_stride32+x]=VGA_RGBPACK(r,g,b,0xff);
         }
+}
+
+void GRAPHICS::init_window(const char *title){
+	setcolor(0,0,0);
+	boxfill(0,0,width-1,height-1);
+	setcolor(0x99,0xcc,0xff,0xcc);
+	boxfill(1,1,width-2,height-2);
+	setcolor(192,192,192);
+	bgcolor=color;
+	boxfill(3,25,width-4,height-4);
+	setcolor(255,255,255);
+	putstr(title,1,4,6);
+	setcolor(0,0,0);
+	putstr(title,1,3,5);
 }

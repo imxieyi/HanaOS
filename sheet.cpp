@@ -131,7 +131,20 @@ void SHEET::refreshsub(int vx0, int vy0, int vx1, int vy1, int h0, int h1){
 			for (bx = bx0; bx < bx1; bx++) {
 				vx = sht->vx0 + bx;
 				if (map[vy * sctrl->fb_stride32 + vx] == sid) {
-					vram[vy * sctrl->fb_stride32 + vx] = buf[by * sctrl->fb_stride32 + bx];
+					uint32_t oldcolor=vram[vy * sctrl->fb_stride32 + vx];
+					uint16_t oldr=(oldcolor>>16)&0xff;
+					uint16_t oldg=(oldcolor>>8)&0xff;
+					uint16_t oldb=oldcolor&0xff;
+					uint32_t bufcolor=buf[by * sctrl->fb_stride32 + bx];
+					uint16_t bufr=(bufcolor>>16)&0xff;
+					uint16_t bufg=(bufcolor>>8)&0xff;
+					uint16_t bufb=bufcolor&0xff;
+					uint16_t alpha=(bufcolor>>24)&0xff;
+					uint8_t newr=(oldr*(0xff-alpha)+bufr*alpha)/0xff;
+					uint8_t newg=(oldg*(0xff-alpha)+bufg*alpha)/0xff;
+					uint8_t newb=(oldb*(0xff-alpha)+bufb*alpha)/0xff;
+					uint32_t newcolor=VGA_RGBPACK(newr,newg,newb,0xff);
+					vram[vy * sctrl->fb_stride32 + vx] = newcolor;
 				}
 			}
 		}
