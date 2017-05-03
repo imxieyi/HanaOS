@@ -129,5 +129,5 @@ idt_init(void)
 
     idt_flush((uint32_t)&idt);
 
-    __asm__ volatile ("sti");
+//    __asm__ volatile ("sti");
 }

@@ -18,6 +18,8 @@
 #define IRQ14 46
 #define IRQ15 47
 
+#include <stdint.h>
+
 typedef struct {
     uint32_t ds;
     uint32_t edi, esi, ebp, esp, ebx, edx, ecx, eax;
