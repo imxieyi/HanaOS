@@ -66,12 +66,18 @@ void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 	sprintf(str,"mem %dMB free:%dKB",memtotal/0x400000*4,memman->total()/1024);
 	sht_back->putstring(50,110,2,0xff0000,0x66ccff,str);
 	sht_back->putstring(50,150,2,0x2a6927,0x66ccff,"Hello HanaOS!");
+	
+	auto test_win=shtctl->allocsheet(320,100);
+	test_win->graphics->init_window("test");
+	test_win->slide(250,250);
+	test_win->updown(1);
+	test_win->putstring(10,50,2,0xff0000,test_win->graphics->bgcolor,"I am a window");
 
 	//Init window
 	sht_win=shtctl->allocsheet(320,100);
 	sht_win->graphics->init_window("timer");
 	sht_win->slide(320,300);
-	sht_win->updown(1);
+	sht_win->updown(2);
 
 	gdt_init();
 	idt_init();
