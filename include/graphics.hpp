@@ -4,12 +4,27 @@
 #include "multiboot.h"
 
 #define VGA_RGBPACK(r, g, b) ((r << 16)|(g << 8)|(b << 0))
-void setcolor(uint8_t r,uint8_t g,uint8_t b);
-void setcolor(uint32_t c);
-void boxfill(int x0,int y0,int x1,int y1);
-void putchar(unsigned char ch,int scale,int x,int y);
-void putstr(const char *str,int scale,int x,int y);
-void show_bgimg();
 void init_graphics(vbe_mode_info_t *vbeinfo);
+
+class GRAPHICS {
+private:
+	uint16_t width,height;
+	uint8_t bpp;
+	uint16_t fb_stride32;
+	uint32_t color;
+public:
+	uint32_t *vram;
+	void init(uint32_t *vram,uint16_t width,uint16_t height,uint8_t bpp,uint16_t fb_stride32);
+	void init_screen();
+	void show_bgimg();
+ 	void init_mouse_cursor();
+	void init_window(char *title);
+	void setcolor(uint8_t r,uint8_t g,uint8_t b);
+	void setcolor(uint32_t c);
+	void boxfill(int x0, int y0, int x1, int y1);
+	void putchar(unsigned char ch,int scale,int x,int y);
+	void putstr(const char *str,int scale,int x,int y);
+	void putblock8_8(int pxsize, int pysize, int px0, int py0, char *buf, int bxsize);
+};
 
 #endif

@@ -1,6 +1,8 @@
 #ifndef _HANASTD_HPP
 #define _HANASTD_HPP
 
+#include <stdint.h>
+
 namespace hanastd {
 	template <typename T>
 	auto strlen(T str){
