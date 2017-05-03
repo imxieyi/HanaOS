@@ -91,9 +91,19 @@ void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 	fifo->init(memman,128);
 	init_keyboard(fifo,256);
 	register_interrupt_handler(IRQ1,&keyboard_interrupt);
+	
+	//Mouse init
 	auto mdec=(struct MOUSE_DEC*)memman->alloc(sizeof(struct MOUSE_DEC));
 	enable_mouse(fifo,512,mdec);
 	register_interrupt_handler(IRQ12,&mouse_handler);
+	
+	//Mouse cursor init
+	int mx=shtctl->xsize/2;
+	int my=shtctl->ysize/2;
+	auto mouse_sht=shtctl->allocsheet(20,30);
+	mouse_sht->graphics->init_mouse_cursor();
+	mouse_sht->updown(100);
+	mouse_sht->slide(mx,my);
 	
 	auto timer1=timerctrl->alloc()->init(fifo,10);
 	auto timer2=timerctrl->alloc()->init(fifo,3);
@@ -124,6 +134,13 @@ void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 					if(mdec->btn&0x02)str[2]='R';
 					if(mdec->btn&0x04)str[1]='C';
 					sht_back->putstring(90,200,2,0x0000ff,0x66ccff,str);
+					mx+=mdec->x;
+					my+=mdec->y;
+					mx=mx<0?0:mx;
+					my=my<0?0:my;
+					mx=mx>shtctl->xsize-1?shtctl->xsize-1:mx;
+					my=my>shtctl->ysize-1?shtctl->ysize-1:my;
+					mouse_sht->slide(mx,my);
 				}
 			}else if(i==10){
 				sht_back->putstring(50,250,2,0x000000,0x66ccff,"10[sec]");

@@ -2,6 +2,7 @@
 #include "multiboot.h"
 #include "graphics.hpp"
 #include "bgimg.hpp"
+#include "mousecursor.hpp"
 #include "hankaku.hpp"
 
 void GRAPHICS::init(uint32_t *vram,uint16_t width,uint16_t height,uint8_t bpp,uint16_t fb_stride32){
@@ -71,4 +72,19 @@ void GRAPHICS::init_window(const char *title){
 	putstr(title,1,4,6);
 	setcolor(0,0,0);
 	putstr(title,1,3,5);
+}
+
+void GRAPHICS::init_mouse_cursor(){
+    uint32_t pixel=0;
+    uint8_t r,g,b,a;
+	for(int x=0;x<width;x++)
+		for(int y=0;y<height;y++){
+            pixel=cursor[y+x*height];
+            r=(pixel&0xff0000)>>16;
+            g=(pixel&0xff00)>>8;
+            b=pixel&0xff;
+			a=0xff;
+			if(r==0xff&&g==0x00&&b==0x00)a=0;
+			vram[y*fb_stride32+x]=VGA_RGBPACK(r,g,b,a);
+        }
 }

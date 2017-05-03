@@ -18,7 +18,7 @@ public:
 	void init(uint32_t *vram,uint16_t width,uint16_t height,uint8_t bpp,uint16_t fb_stride32);
 	void init_screen();
 	void show_bgimg();
- 	void init_mouse_cursor();
+	void init_mouse_cursor();
 	void init_window(const char *title);
 	void setcolor(uint8_t r,uint8_t g,uint8_t b,uint8_t a);
 	void setcolor(uint8_t r,uint8_t g,uint8_t b);
