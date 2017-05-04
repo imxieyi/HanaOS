@@ -71,12 +71,11 @@ void SHEETCTRL::refreshpixel(int x, int y, int height){
 			goto next;
 		int vx=x-sht->vx0;
 		int vy=y-sht->vy0;
-//		uint32_t bufcolor=sht->graphics->vram[vy * fb_stride32 + vx];
 		uint32_t bufcolor=sht->graphics->vram[vy * sht->bxsize + vx];
 		uint16_t alpha=(bufcolor>>24)&0xff;
 		if(alpha==0)goto next;
-//		uint32_t newcolor=bufcolor;
-//		if(alpha<0xff){
+		uint32_t newcolor=bufcolor;
+		if(alpha<0xff){
 			refreshpixel(x,y,height-1);
 			uint16_t bufr=(bufcolor>>16)&0xff;
 			uint16_t bufg=(bufcolor>>8)&0xff;
@@ -88,8 +87,8 @@ void SHEETCTRL::refreshpixel(int x, int y, int height){
 			uint8_t newr=(oldr*(0xff-alpha)+bufr*alpha)/0xff;
 			uint8_t newg=(oldg*(0xff-alpha)+bufg*alpha)/0xff;
 			uint8_t newb=(oldb*(0xff-alpha)+bufb*alpha)/0xff;
-			uint32_t newcolor=VGA_RGBPACK(newr,newg,newb,0xff);
-//		}
+			newcolor=VGA_RGBPACK(newr,newg,newb,0xff);
+		}
 		vram[y * fb_stride32 + x] = newcolor;
 		return;
 	}
@@ -99,8 +98,8 @@ void SHEETCTRL::refreshpixel(int x, int y, int height){
 void SHEETCTRL::refreshall(int vx0, int vy0, int vx1, int vy1){
 	vx0=vx0<0?0:vx0;
 	vy0=vy0<0?0:vy0;
-	vx1=vx1>xsize?xsize:vx1;
-	vy1=vy1>ysize?ysize:vy1;
+	vx1=vx1>=xsize?(xsize-1):vx1;
+	vy1=vy1>=ysize?(ysize-1):vy1;
 	for(int x=vx0;x<=vx1;x++)
 		for(int y=vy0;y<=vy1;y++)
 			refreshpixel(x,y,top);

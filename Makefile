@@ -14,7 +14,7 @@ OBJECTS	= $(BUILD)/kernel.o $(BUILD)/boot.a.o $(BUILD)/graphics.o $(BUILD)/gdt.o
 
 default:
 	mkdir -p build
-	make kernel
+	make iso
 
 %.a.o: %.asm Makefile
 	$(NASM) -f elf $*.asm -o $(BUILD)/$*.a.o
@@ -29,7 +29,7 @@ iso: kernel
 	cp $(BUILD)/kernel $(ISODIR)/boot/
 	grub-mkrescue -d /usr/lib/grub/i386-pc -o $(ISOFILE) $(ISODIR)
 
-run: iso
+run:
 	$(QEMU) -m 32 -vga std -cdrom $(ISOFILE)
 
 clean:

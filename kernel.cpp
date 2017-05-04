@@ -58,7 +58,7 @@ void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 	sht_back->slide(0,0);
 	sht_back->updown(0);
 	sht_back->graphics->setcolor(0x66ccff);
-	sht_back->graphics->boxfill(0,100,500,600);
+	sht_back->graphics->boxfill(0,100,500,400);
 	shtctl->refreshall(0,0,1024,768);
 
 	char str[128];
@@ -110,16 +110,6 @@ void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 	timer2->set(300);
 	timer3->set(50);
 	io_sti();
-	sprintf(str,"mem %dMB free:%dKB",memtotal/0x400000*4,memman->total()/1024);
-	sht_back->putstring(50,110,2,0xff0000,0x66ccff,str);
-	sprintf(str,"sht_back: %d",sht_back->graphics->vram);
-	sht_back->putstring(50,400,2,0xff0000,0x66ccff,str);
-	sprintf(str,"test_win: %d",test_win->graphics->vram);
-	sht_back->putstring(50,450,2,0xff0000,0x66ccff,str);
-	sprintf(str,"sht_win: %d",sht_win->graphics->vram);
-	sht_back->putstring(50,500,2,0xff0000,0x66ccff,str);
-	sprintf(str,"mouse_sht: %d",mouse_sht->graphics->vram);
-	sht_back->putstring(50,550,2,0xff0000,0x66ccff,str);
 
 	int i=0;
 	for(;;){
@@ -141,7 +131,6 @@ void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 					if(mdec.btn&0x02)str[2]='R';
 					if(mdec.btn&0x04)str[1]='C';
 					test_win->putstring(10,50,2,0xff0000,test_win->graphics->bgcolor,str);
-//					sht_back->putstring(90,200,2,0x0000ff,0x66ccff,str);
 					mx+=mdec.x;
 					my+=mdec.y;
 					mx=mx<0?0:mx;
@@ -150,7 +139,7 @@ void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 					my=my>shtctl->ysize-1?shtctl->ysize-1:my;
 					mouse_sht->slide(mx,my);
 					sprintf(str,"(%4d,%4d)",mx,my);
-//					sht_back->putstring(300,150,2,0x2a6927,0x66ccff,str);
+					sht_back->putstring(300,150,2,0x2a6927,0x66ccff,str);
 				}
 			}else if(i==10){
 				sht_back->putstring(50,250,2,0x000000,0x66ccff,"10[sec]");
