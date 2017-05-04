@@ -27,7 +27,7 @@ align 4
 
 section .bss
 kernel_stack_bottom:
-	resb 32768
+	resb 0x100000
 kernel_stack_top:
     
 section .text

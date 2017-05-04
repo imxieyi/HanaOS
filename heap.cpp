@@ -67,6 +67,7 @@ unsigned int MEMMAN::total(){
 }
 
 unsigned int MEMMAN::alloc(unsigned int size){
+//	return kmalloc_a(size);
 	unsigned int i,a;
 	for(i=0;i<this->frees;i++)
 		if(this->freeinfo[i].size>=size){
@@ -124,6 +125,7 @@ int MEMMAN::free(unsigned int addr,unsigned int size){
 unsigned int MEMMAN::alloc_4k(unsigned int size){
 	size=(size+0xfff)&0xfffff000;
 	return this->alloc(size);
+//	return kmalloc_a(size);
 }
 
 int MEMMAN::free_4k(unsigned int addr,unsigned int size){

@@ -28,7 +28,8 @@ void GRAPHICS::setcolor(uint32_t c){
 void GRAPHICS::boxfill(int x0,int y0,int x1,int y1){
 	for(int x=x0;x<=x1;x++)
 		for(int y=y0;y<=y1;y++)
-			vram[y*fb_stride32+x]=color;
+//			vram[y*fb_stride32+x]=color;
+			vram[y*width+x]=color;
 }
 
 void GRAPHICS::putchar(unsigned char ch,int scale,int x,int y){
@@ -56,7 +57,7 @@ void GRAPHICS::show_bgimg(){
             r=(pixel&0xff0000)>>16;
             g=(pixel&0xff00)>>8;
             b=pixel&0xff;
-			vram[y*fb_stride32+x]=VGA_RGBPACK(r,g,b,0xff);
+			vram[y*width+x]=VGA_RGBPACK(r,g,b,0xff);
         }
 }
 
@@ -85,6 +86,6 @@ void GRAPHICS::init_mouse_cursor(){
             b=pixel&0xff;
 			a=0xff;
 			if(r==0xff&&g==0x00&&b==0x00)a=0;
-			vram[y*fb_stride32+x]=VGA_RGBPACK(r,g,b,a);
+			vram[y*width+x]=VGA_RGBPACK(r,g,b,a);
         }
 }
