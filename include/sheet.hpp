@@ -14,6 +14,7 @@ public:
 	void refreshsub(int bx0,int by0,int bx1,int by1,int h0,int h1);
 	void slide(int vx0,int vy0);
 	void putstring(int x,int y,int scale,uint32_t f,uint32_t b,char *s);
+	void putstring(int x,int y,int scale,uint32_t f,uint32_t b,bool withalpha,char *s);
 	void free();
 };
 class SHEETCTRL {

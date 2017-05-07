@@ -25,9 +25,13 @@ void GRAPHICS::setcolor(uint32_t c){
 	color=0xff000000|c;
 }
 
+void GRAPHICS::setcolor(uint32_t c,bool withalpha){
+	color=c;
+}
+
 void GRAPHICS::boxfill(int x0,int y0,int x1,int y1){
-	for(int x=x0;x<=x1;x++)
-		for(int y=y0;y<=y1;y++)
+	for(int x=x0;x<x1;x++)
+		for(int y=y0;y<y1;y++)
 //			vram[y*fb_stride32+x]=color;
 			vram[y*width+x]=color;
 }

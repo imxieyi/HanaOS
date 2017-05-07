@@ -12,10 +12,14 @@ void init_pit(){
 	io_out8(PIT_CNT0,0x9c);
 	io_out8(PIT_CNT0,0x2e);
 	timerctrl->count=0;
-	timerctrl->next=0xffffffff;
-	timerctrl->inuse=0;
 	for(int i=0;i<MAX_TIMER;i++)
 		timerctrl->timer[i].flag=FREE;
+	auto t=timerctrl->alloc();
+	t->timeout=0xffffffff;
+	t->flag=USING;
+	t->next=NULL;
+	timerctrl->t0=t;
+	timerctrl->next=0xffffffff;
 	return;
 }
 
@@ -28,28 +32,36 @@ void timer_handler(registers_t regs){
 void TIMERCTRL::interrupt(){
 	count++;
 	if(next>count)return;
-	int i;
-	for(i=0;i<inuse;i++){
-		if(timers[i]->timeout>count)break;
-		timers[i]->push();
+	auto timer=t0;
+	for(;;){
+		if(timer->timeout>count)break;
+		timer->push();
+		timer=timer->next;
 	}
-	inuse-=i;
-	for(int j=0;j<inuse;j++)timers[j]=timers[i+j];
-	if(inuse>0)next=timers[0]->timeout;
-	else next=0xffffffff;
+	t0=timer;
+	next=t0->timeout;
 	return;
 }
 
 void TIMERCTRL::regist(TIMER *timer){
-	int i;
-	for(i=0;i<inuse;i++)
-		if(timers[i]->timeout>=timer->timeout)
-			break;
-	for(int j=inuse;j>i;j--)
-		timers[j]=timers[j-1];
-	inuse++;
-	timers[i]=timer;
-	next=timers[0]->timeout;
+	auto t=t0;
+	if(timer->timeout<=t->timeout){
+		t0=timer;
+		timer->next=t;
+		next=timer->timeout;
+		return;
+	}
+	TIMER *s;
+	for(;;){
+		s=t;
+		t=t->next;
+		if(t==NULL)break;
+		if(timer->timeout<=t->timeout){
+			s->next=timer;
+			timer->next=t;
+			return;
+		}
+	}
 	return;
 }
 

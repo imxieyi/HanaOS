@@ -27,6 +27,7 @@ kernel: boot.a.o asmfunc.a.o isr.o irq.o table_flush.a.o fifo.o keyboard.o mouse
 
 iso: kernel
 	cp $(BUILD)/kernel $(ISODIR)/boot/
+	strip $(ISODIR)/boot/kernel
 	grub-mkrescue -d /usr/lib/grub/i386-pc -o $(ISOFILE) $(ISODIR)
 
 run:

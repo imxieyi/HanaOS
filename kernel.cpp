@@ -16,30 +16,9 @@
 using namespace hanastd;
 
 SHEET *sht_back,*sht_win;
-uint32_t tick=0;
-char buff[32];
-/*static void timer_handler(registers_t regs){
-	(void)regs;
-	if(tick==4294967295)tick=0;
-	else tick++;
-	sprintf(buff,"Tick: %d",tick);
-	sht_win->putstring(10,50,2,0x000000,sht_win->graphics->bgcolor,buff);
-}*/
-void timer_init(uint32_t frequency){
-	register_interrupt_handler(IRQ0,&timer_handler);
-	uint32_t divisor=1193180/frequency;
-	io_out8(0x43,0x36);
-	uint8_t l=(uint8_t)(divisor&0xff);
-	uint8_t h=(uint8_t)((divisor>>8)&0xff);
-	io_out8(0x40,l);
-	io_out8(0x40,h);
-}
 extern TIMERCTRL *timerctrl;
-#ifdef __cplusplus
-extern "C"{
-#endif
 extern uint32_t kmalloc_addr;
-void kernel_main(multiboot_info_t *hdr,uint32_t magic)
+extern "C" void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 {
 	//Memory Test & MEMMAN init
 	unsigned int memtotal;
@@ -51,30 +30,43 @@ void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 
 	//Init Sheetctrl
 	auto shtctl=sheetctrl_init(memman,(vbe_mode_info_t*)hdr->vbe_mode_info);
+	
+	auto sht_bg=shtctl->allocsheet(shtctl->xsize,shtctl->ysize);
+	sht_bg->graphics->show_bgimg();
+	sht_bg->slide(0,0);
+	sht_bg->updown(0);
 
 	//Init background
 	sht_back=shtctl->allocsheet(shtctl->xsize,shtctl->ysize);
-	sht_back->graphics->show_bgimg();
+// 	sht_back->graphics->show_bgimg();
 	sht_back->slide(0,0);
-	sht_back->updown(0);
-	sht_back->graphics->setcolor(0x66ccff);
+	sht_back->updown(1);
+	sht_back->graphics->setcolor(0x00000000,true);
+	sht_back->graphics->boxfill(0,0,shtctl->xsize,shtctl->ysize);
+	sht_back->graphics->setcolor(0xcc66ccff,true);
 	sht_back->graphics->boxfill(0,100,500,400);
 	shtctl->refreshall(0,0,1024,768);
 
 	char str[128];
-	sht_back->putstring(50,150,2,0x2a6927,0x66ccff,"Hello HanaOS!");
+	sht_back->putstring(50,150,2,0x2a6927,0xcc66ccff,true,"Hello HanaOS!");
 	
 	auto test_win=shtctl->allocsheet(320,100);
 	test_win->graphics->init_window("mouse");
 	test_win->slide(250,250);
-	test_win->updown(1);
+	test_win->updown(2);
 //	test_win->putstring(10,50,2,0xff0000,test_win->graphics->bgcolor,"I am a window");
 
 	//Init window
 	sht_win=shtctl->allocsheet(320,100);
 	sht_win->graphics->init_window("timer");
 	sht_win->slide(320,300);
-	sht_win->updown(2);
+	sht_win->updown(3);
+	
+	//Keyboard window
+	auto key_win=shtctl->allocsheet(320,100);
+	key_win->graphics->init_window("keyboard");
+	key_win->slide(250,360);
+	key_win->updown(4);
 	
 	//Init timer
 	timerctrl=(TIMERCTRL*)memman->alloc_4k(sizeof(TIMERCTRL));
@@ -101,7 +93,7 @@ void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 	auto mouse_sht=shtctl->allocsheet(20,30);
 	mouse_sht->graphics->init_mouse_cursor();
 	mouse_sht->slide(mx,my);
-	mouse_sht->updown(3);
+	mouse_sht->updown(5);
 	
 	auto timer1=timerctrl->alloc()->init(fifo,10);
 	auto timer2=timerctrl->alloc()->init(fifo,3);
@@ -112,6 +104,7 @@ void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 	io_sti();
 
 	int i=0;
+	char ch;
 	for(;;){
 		io_cli();
 		sprintf(str,"%d",timerctrl->count);
@@ -123,7 +116,12 @@ void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 			io_sti();
 			if(i>=256&&i<=511){
 				sprintf(str,"%02X",i-256);
-				sht_back->putstring(50,200,2,0x0000ff,0x66ccff,str);
+				sht_back->putstring(50,200,2,0x0000ff,0xcc66ccff,true,str);
+				if((ch=getchar(i-256))!=0){
+					str[0]=ch;
+					str[1]=0;
+					key_win->putstring(10,50,2,0x0000ff,key_win->graphics->bgcolor,str);
+				}
 			}else if(i>=512&i<=767){
 				if(mouse_decode(&mdec,i-512)|1){
 					sprintf(str,"lcr %4d %4d",mdec.x,mdec.y);
@@ -139,12 +137,12 @@ void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 					my=my>shtctl->ysize-1?shtctl->ysize-1:my;
 					mouse_sht->slide(mx,my);
 					sprintf(str,"(%4d,%4d)",mx,my);
-					sht_back->putstring(300,150,2,0x2a6927,0x66ccff,str);
+					sht_back->putstring(300,150,2,0x2a6927,0xcc66ccff,true,str);
 				}
 			}else if(i==10){
-				sht_back->putstring(50,250,2,0x000000,0x66ccff,"10[sec]");
+				sht_back->putstring(50,250,2,0x000000,0xcc66ccff,true,"10[sec]");
 			}else if(i==3){
-				sht_back->putstring(50,250,2,0x000000,0x66ccff,"3[sec]");
+				sht_back->putstring(50,250,2,0x000000,0xcc66ccff,true,"3[sec]");
 			}else if(i==1){
 				timer3->setdata(0);
 				sht_back->graphics->setcolor(0,0,0);
@@ -153,7 +151,7 @@ void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 				shtctl->refreshall(170,250,180,280);
 			}else if(i==0){
 				timer3->setdata(1);
-				sht_back->graphics->setcolor(0x66ccff);
+				sht_back->graphics->setcolor(0xcc66ccff,true);
 				sht_back->graphics->boxfill(170,250,180,280);
 				timer3->set(50);
 				shtctl->refreshall(170,250,180,280);
@@ -161,6 +159,3 @@ void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 		}
 	}
 }
-#ifdef __cplusplus
-}
-#endif

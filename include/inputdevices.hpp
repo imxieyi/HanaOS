@@ -30,6 +30,7 @@
 void wait_kbc_sendready(void);
 void init_keyboard(FIFO *fifo,int data0);
 void keyboard_interrupt(registers_t regs);
+char getchar(uint8_t code);
 
 //mouse.c
 struct MOUSE_DEC {

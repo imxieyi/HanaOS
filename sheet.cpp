@@ -118,9 +118,20 @@ void SHEET::slide(int vx0,int vy0){
 }
 
 void SHEET::putstring(int x,int y,int scale,uint32_t f,uint32_t b,char *s){
-	int l=hanastd::strlen(s)-1;
+	int l=hanastd::strlen(s);
 	graphics->setcolor(b);
-	graphics->boxfill(x,y,x+l*8*scale-1,y+15*scale);
+	graphics->boxfill(x,y,x+l*8*scale,y+16*scale);
+	graphics->setcolor(f);
+	graphics->putstr(s,scale,x,y);
+	if(height>=0)
+		sctrl->refreshall(x+vx0,y+vy0,x+vx0+l*8*scale,y+vy0+16*scale);
+	return;
+}
+
+void SHEET::putstring(int x,int y,int scale,uint32_t f,uint32_t b,bool withalpha,char *s){
+	int l=hanastd::strlen(s);
+	graphics->setcolor(b,true);
+	graphics->boxfill(x,y,x+l*8*scale,y+16*scale);
 	graphics->setcolor(f);
 	graphics->putstr(s,scale,x,y);
 	if(height>=0)

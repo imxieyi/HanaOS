@@ -13,6 +13,7 @@ private:
 	int data;
 public:
 	FIFO *fifo;
+	TIMER *next;
 	TIMER_FLAG flag;
 	unsigned int timeout;
 	void set(unsigned int timeout);
@@ -23,8 +24,8 @@ public:
 };
 class TIMERCTRL {
 public:
-	unsigned int count,next,inuse;
-	TIMER *timers[MAX_TIMER];
+	unsigned int count,next;
+	TIMER *t0;
 	TIMER timer[MAX_TIMER];
 	TIMER *alloc();
 	void interrupt();
