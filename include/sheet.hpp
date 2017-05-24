@@ -11,7 +11,7 @@ public:
 	int bxsize,bysize,vx0,vy0,height,flags;//height越大越上层
 	SHEET(SHEETCTRL *ctl);
 	void updown(int height);
-	void refreshsub(int bx0,int by0,int bx1,int by1,int h0,int h1);
+	void refresh(int bx0,int by0,int bx1,int by1);
 	void slide(int vx0,int vy0);
 	void putstring(int x,int y,int scale,uint32_t f,uint32_t b,char *s);
 	void putstring(int x,int y,int scale,uint32_t f,uint32_t b,bool withalpha,char *s);

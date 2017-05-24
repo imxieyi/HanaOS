@@ -30,9 +30,8 @@ void GRAPHICS::setcolor(uint32_t c,bool withalpha){
 }
 
 void GRAPHICS::boxfill(int x0,int y0,int x1,int y1){
-	for(int x=x0;x<x1;x++)
-		for(int y=y0;y<y1;y++)
-//			vram[y*fb_stride32+x]=color;
+	for(int x=x0;x<=x1;x++)
+		for(int y=y0;y<=y1;y++)
 			vram[y*width+x]=color;
 }
 
@@ -41,7 +40,7 @@ void GRAPHICS::putchar(unsigned char ch,int scale,int x,int y){
 		uint8_t bit=0x80;
 		for(int j=0;j<8;j++){
 			uint8_t b=hankaku[ch*16+i];
-			if((b&bit)!=0)boxfill(x+j*scale,y+i*scale,x+(j+1)*scale,y+(i+1)*scale);
+			if((b&bit)!=0)boxfill(x+j*scale,y+i*scale,x+(j+1)*scale-1,y+(i+1)*scale-1);
 			bit>>=1;
 		}
 	}
@@ -92,4 +91,21 @@ void GRAPHICS::init_mouse_cursor(){
 			if(r==0xff&&g==0x00&&b==0x00)a=0;
 			vram[y*width+x]=VGA_RGBPACK(r,g,b,a);
         }
+}
+
+void GRAPHICS::make_textbox(int x0, int y0,int x1, int y1, uint32_t bgcolor){
+	setcolor(0x848484);
+	boxfill(x0-2, y0-3, x1+1, y0-3);
+	boxfill(x0-3, y0-3, x0-3, y1+1);
+	setcolor(0xffffff);
+	boxfill(x0-3, y1+2, x1+1, y1+2);
+	boxfill(x1+2, y0-3, x1+2, y1+2);
+	setcolor(0x000000);
+	boxfill(x0-1, y0-2, x1+0, y0-2);
+	boxfill(x0-2, y0-2, x0-2, y1+0);
+	setcolor(0xc6c6c6);
+	boxfill(x0-2, y1+1, x1+0, y1+1);
+	boxfill(x1+1, y0-2, x1+1, y1+1);
+	setcolor(bgcolor);
+	boxfill(x0-1, y0-1, x1+0, y1+0);
 }

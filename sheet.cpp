@@ -84,10 +84,8 @@ void SHEETCTRL::refreshpixel(int x, int y, int height){
 			uint16_t oldr=(oldcolor>>16)&0xff;
 			uint16_t oldg=(oldcolor>>8)&0xff;
 			uint16_t oldb=oldcolor&0xff;
-			uint8_t newr=(oldr*(0xff-alpha)+bufr*alpha)/0xff;
-			uint8_t newg=(oldg*(0xff-alpha)+bufg*alpha)/0xff;
-			uint8_t newb=(oldb*(0xff-alpha)+bufb*alpha)/0xff;
-			newcolor=VGA_RGBPACK(newr,newg,newb,0xff);
+			uint8_t blend=0xff-alpha;
+			newcolor=VGA_RGBPACK((oldr*blend+bufr*alpha)>>8,(oldg*blend+bufg*alpha)>>8,(oldb*blend+bufb*alpha)>>8,0xff);
 		}
 		vram[y * fb_stride32 + x] = newcolor;
 		return;
@@ -137,6 +135,10 @@ void SHEET::putstring(int x,int y,int scale,uint32_t f,uint32_t b,bool withalpha
 	if(height>=0)
 		sctrl->refreshall(x+vx0,y+vy0,x+vx0+l*8*scale,y+vy0+16*scale);
 	return;
+}
+
+void SHEET::refresh(int bx0,int by0,int bx1,int by1){
+	sctrl->refreshall(vx0+bx0,vy0+by0,vx0+bx1,vy0+by1);
 }
 
 void SHEET::free(){

@@ -65,6 +65,7 @@ extern "C" void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 	//Keyboard window
 	auto key_win=shtctl->allocsheet(320,100);
 	key_win->graphics->init_window("keyboard");
+	key_win->graphics->make_textbox(15,50,250,66,0xffffff);
 	key_win->slide(250,360);
 	key_win->updown(4);
 	
@@ -103,6 +104,9 @@ extern "C" void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 	timer3->set(50);
 	io_sti();
 
+	int cursor_x=16;
+	uint32_t cursor_c=0xffffff;
+
 	int i=0;
 	char ch;
 	for(;;){
@@ -117,11 +121,18 @@ extern "C" void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 			if(i>=256&&i<=511){
 				sprintf(str,"%02X",i-256);
 				sht_back->putstring(50,200,2,0x0000ff,0xcc66ccff,true,str);
-				if((ch=getchar(i-256))!=0){
-					str[0]=ch;
-					str[1]=0;
-					key_win->putstring(10,50,2,0x0000ff,key_win->graphics->bgcolor,str);
-				}
+				if(256<=i&&i<=511)
+					if(getchar(i-256)!=0&&cursor_x<240){
+						str[0]=getchar(i-256);
+						str[1]=0;
+						key_win->putstring(cursor_x,50,1,0x000000,0xffffff,str);
+						cursor_x+=8;
+					}
+					if(i==256+0x0e&&cursor_x>16){
+						cursor_x-=8;
+						key_win->putstring(cursor_x,50,1,0x000000,0xffffff," ");
+					}
+					key_win->graphics->boxfill(cursor_x,50,cursor_x+8,65);
 			}else if(i>=512&i<=767){
 				if(mouse_decode(&mdec,i-512)|1){
 					sprintf(str,"lcr %4d %4d",mdec.x,mdec.y);
@@ -138,6 +149,8 @@ extern "C" void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 					mouse_sht->slide(mx,my);
 					sprintf(str,"(%4d,%4d)",mx,my);
 					sht_back->putstring(300,150,2,0x2a6927,0xcc66ccff,true,str);
+					if((mdec.btn&0x01)!=0)
+						key_win->slide(mx-118,my-8);
 				}
 			}else if(i==10){
 				sht_back->putstring(50,250,2,0x000000,0xcc66ccff,true,"10[sec]");
@@ -145,16 +158,17 @@ extern "C" void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 				sht_back->putstring(50,250,2,0x000000,0xcc66ccff,true,"3[sec]");
 			}else if(i==1){
 				timer3->setdata(0);
-				sht_back->graphics->setcolor(0,0,0);
-				sht_back->graphics->boxfill(170,250,180,280);
+				key_win->graphics->setcolor(0xffffff);
+				key_win->graphics->boxfill(cursor_x,50,cursor_x+8,65);
+				key_win->refresh(cursor_x,50,cursor_x+7,66);
 				timer3->set(50);
 				shtctl->refreshall(170,250,180,280);
 			}else if(i==0){
 				timer3->setdata(1);
-				sht_back->graphics->setcolor(0xcc66ccff,true);
-				sht_back->graphics->boxfill(170,250,180,280);
+				key_win->graphics->setcolor(0x000000);
+				key_win->graphics->boxfill(cursor_x,50,cursor_x+8,65);
+				key_win->refresh(cursor_x,50,cursor_x+7,66);
 				timer3->set(50);
-				shtctl->refreshall(170,250,180,280);
 			}
 		}
 	}

@@ -28,6 +28,7 @@ public:
 	void putchar(unsigned char ch,int scale,int x,int y);
 	void putstr(const char *str,int scale,int x,int y);
 	void putblock8_8(int pxsize, int pysize, int px0, int py0, char *buf, int bxsize);
+	void make_textbox(int x0, int y0,int x1, int y1, uint32_t bgcolor);
 };
 
 #endif
