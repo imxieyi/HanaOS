@@ -41,7 +41,7 @@ void task_c_main(){
 			sprintf(str,"Task C exited!");
 			sht_back->putstring(10,525,1,0x000000,0xffffff,str);
 			auto newtask=createTask(&task_e_main);
-			task_run(newtask,4);
+			task_run(newtask,1,4);
 			exitTask();
 		}
 		sprintf(str,"Task C: %d",count);
@@ -140,11 +140,11 @@ extern "C" void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 	auto mt_timer=timerctrl->alloc();
 	auto taska=initTasking(mt_timer);
 	auto taskb=createTask(&task_b_main);
-	task_run(taskb,1);
+	task_run(taskb,1,1);
 	auto taskc=createTask(&task_c_main);
-	task_run(taskc,2);
+	task_run(taskc,1,2);
 	auto taskd=createTask(&task_d_main);
-	task_run(taskd,3);
+	task_run(taskd,1,3);
 	
 	//Keyboard init
 	auto fifo=(FIFO*)memman->alloc_4k(sizeof(FIFO));

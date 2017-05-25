@@ -12,16 +12,24 @@ enum TASKSTATUS{EMPTY,RUNNING,SLEEPING};
 typedef struct Task {
 	Registers regs;
 	TASKSTATUS stat=RUNNING;
-	int priority;
+	int level,priority;
 } __attribute__((packed)) Task;
 
 #define MAX_TASKS 1000
+#define MAX_TASKS_LV 100
+#define MAX_TASKLEVELS 10
+
+struct TASKLEVEL {
+	int running;
+	int now;
+	Task *tasks[MAX_TASKS_LV];
+};
 
 class TASKCTRL {
 public:
-	int running;
-	int now;
-	Task *tasks[MAX_TASKS];
+	int now_lv;
+	char lv_change;
+	struct TASKLEVEL level[MAX_TASKLEVELS];
 	Task tasks0[MAX_TASKS];
 	Task *alloc();
 };
@@ -29,7 +37,7 @@ public:
 extern "C" void switchTask(Registers *from, Registers *to);
 extern "C" void mt_taskswitch();
 Task *createTask(void (*main)());
-void task_run(Task *task,int priority);
+void task_run(Task *task,int level,int priority);
 void exitTask();
 void sleepTask();
 Task *initTasking(TIMER *timer);

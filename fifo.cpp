@@ -41,7 +41,7 @@ int FIFO::put(int data){
 	free--;
 	if(task!=0)
 		if(task->stat!=RUNNING)
-			task_run(task,0);
+			task_run(task,-1,0);
 	return 0;
 }
 
