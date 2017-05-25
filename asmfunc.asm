@@ -169,4 +169,5 @@ switchTask:
 	mov		eax,[eax+32]
 	xchg	eax,[esp]
 	mov		eax,[eax]
+	sti
 	ret

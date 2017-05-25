@@ -3,6 +3,7 @@
 #include "fifo.hpp"
 #include "heap.hpp"
 #include "inputdevices.hpp"
+#include "task.hpp"
 
 TIMERCTRL *timerctrl;
 
@@ -23,23 +24,35 @@ void init_pit(){
 	return;
 }
 
+registers_t *regists;
+
 void timer_handler(registers_t regs){
+	regists=&regs;
 	io_out8(PIC0_OCW2,0x60);
 	timerctrl->interrupt();
 	return;
 }
 
+extern TIMER *mt_timer;
+
 void TIMERCTRL::interrupt(){
 	count++;
+	char ts=0;
 	if(next>count)return;
 	auto timer=t0;
 	for(;;){
 		if(timer->timeout>count)break;
-		timer->push();
+		if(timer!=mt_timer){
+			timer->push();
+		}else{
+			timer->flag=ALLOC;
+			ts=1;
+		}
 		timer=timer->next;
 	}
 	t0=timer;
 	next=t0->timeout;
+	if(ts!=0)mt_taskswitch();
 	return;
 }
 

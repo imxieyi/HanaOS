@@ -1,5 +1,6 @@
 extern isr_handler
 extern irq_handler
+extern mt_taskswitch
 
 %macro ISR_NOERR 1
     global isr%1

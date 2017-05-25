@@ -1,15 +1,20 @@
 //Reference: http://wiki.osdev.org/Kernel_Multitasking
 #include "task.hpp"
 #include "heap.hpp"
+#include "asmfunc.hpp"
+
+#define TASK_SWITCH_INTERVAL 2 //ms
 
 static Task mainTask;
 static Task *lastTask;
 static Task *prevTask;
 static Task *runningTask;
 
+TIMER *mt_timer;
+
 extern MEMMAN *memman;
 
-void initTasking(){
+void initTasking(TIMER *timer){
 	asm volatile("movl %%cr3, %%eax; movl %%eax, %0;":"=m"(mainTask.regs.cr3)::"%eax");
 	asm volatile("pushfl; movl (%%esp), %%eax; movl %%eax, %0; popfl;":"=m"(mainTask.regs.eflags)::"%eax");
 	
@@ -17,6 +22,15 @@ void initTasking(){
 	runningTask=&mainTask;
 	lastTask=&mainTask;
 	prevTask=&mainTask;
+	
+	//Timer
+	mt_timer=timer;
+	mt_timer->set(TASK_SWITCH_INTERVAL);
+}
+
+void mt_taskswitch(){
+	mt_timer->set(TASK_SWITCH_INTERVAL);
+	preempt();
 }
 
 void createTask(void (*main)()){
