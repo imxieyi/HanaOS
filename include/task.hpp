@@ -8,16 +8,30 @@ typedef struct {
 	uint32_t eax,ebx,ecx,edx,esi,edi,esp,ebp,eip,eflags,cr3;
 } __attribute__((packed)) Registers;
 
+enum TASKSTATUS{EMPTY,RUNNING,SLEEPING};
 typedef struct Task {
 	Registers regs;
-	struct Task *next;
+	TASKSTATUS stat=RUNNING;
 } __attribute__((packed)) Task;
+
+#define MAX_TASKS 1000
+
+class TASKCTRL {
+public:
+	int running;
+	int now;
+	Task *tasks[MAX_TASKS];
+	Task tasks0[MAX_TASKS];
+	Task *alloc();
+};
 
 extern "C" void switchTask(Registers *from, Registers *to);
 extern "C" void mt_taskswitch();
-void createTask(void (*main)());
+Task *createTask(void (*main)());
+void task_run(Task *task);
 void exitTask();
-void initTasking(TIMER *timer);
+void sleepTask();
+Task *initTasking(TIMER *timer);
 void preempt();
 
 #endif

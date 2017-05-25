@@ -31,6 +31,44 @@ void task_b_main(){
 	}
 }
 
+void task_e_main();
+void task_c_main(){
+	int count=0;
+	char str[20];
+	for(;;){
+		count++;
+		if(count==1000){
+			sprintf(str,"Task C exited!");
+			sht_back->putstring(10,525,1,0x000000,0xffffff,str);
+			auto newtask=createTask(&task_e_main);
+			task_run(newtask);
+			exitTask();
+		}
+		sprintf(str,"Task C: %d",count);
+		sht_back->putstring(10,525,1,0x000000,0xffffff,str);
+	}
+}
+
+void task_d_main(){
+	int count=0;
+	char str[20];
+	for(;;){
+		count++;
+		sprintf(str,"Task D: %d",count);
+		sht_back->putstring(10,550,1,0x000000,0xffffff,str);
+	}
+}
+
+void task_e_main(){
+	int count=0;
+	char str[20];
+	for(;;){
+		count++;
+		sprintf(str,"Task E: %d",count);
+		sht_back->putstring(10,575,1,0x000000,0xffffff,str);
+	}
+}
+
 extern "C" void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 {
 	//Memory Test & MEMMAN init
@@ -90,17 +128,6 @@ extern "C" void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 	init_pit();
 //	paging_init();
 	
-	//Keyboard init
-	auto fifo=(FIFO*)memman->alloc_4k(sizeof(FIFO));
-	fifo->init(memman,128);
-	init_keyboard(fifo,256);
-	register_interrupt_handler(IRQ1,&keyboard_interrupt);
-	
-	//Mouse init
-	struct MOUSE_DEC mdec;
-	enable_mouse(fifo,512,&mdec);
-	register_interrupt_handler(IRQ12,&mouse_handler);
-	
 	//Mouse cursor init
 	int mx=shtctl->xsize/2;
 	int my=shtctl->ysize/2;
@@ -109,13 +136,26 @@ extern "C" void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 	mouse_sht->slide(mx,my);
 	mouse_sht->updown(5);
 	
-	uint32_t task_b_esp;
-	task_b_esp=memman->alloc_4k(64*1024)+64*1024;
-	
 	//Multitasking
 	auto mt_timer=timerctrl->alloc();
-	initTasking(mt_timer);
-	createTask(&task_b_main);
+	auto taska=initTasking(mt_timer);
+	auto taskb=createTask(&task_b_main);
+	task_run(taskb);
+	auto taskc=createTask(&task_c_main);
+	task_run(taskc);
+	auto taskd=createTask(&task_d_main);
+	task_run(taskd);
+	
+	//Keyboard init
+	auto fifo=(FIFO*)memman->alloc_4k(sizeof(FIFO));
+	fifo->init(memman,128,taska);
+	init_keyboard(fifo,256);
+	register_interrupt_handler(IRQ1,&keyboard_interrupt);
+	
+	//Mouse init
+	struct MOUSE_DEC mdec;
+	enable_mouse(fifo,512,&mdec);
+	register_interrupt_handler(IRQ12,&mouse_handler);
 	
 	auto timer1=timerctrl->alloc()->init(fifo,10);
 	auto timer2=timerctrl->alloc()->init(fifo,3);
@@ -132,8 +172,11 @@ extern "C" void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 		io_cli();
 		sprintf(str,"%d",timerctrl->count);
 		sht_win->putstring(10,50,2,0x000000,sht_win->graphics->bgcolor,str);
+		sprintf(str,"Free RAM: %d",memman->total());
+		sht_back->putstring(10,475,1,0x000000,0xffffff,str);
 		if(fifo->status()==0){
-			io_stihlt();
+			io_sti();
+			sleepTask();
 		}else{
 			i=fifo->get();
 			io_sti();

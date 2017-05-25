@@ -1,9 +1,23 @@
 #include "fifo.hpp"
 #include "heap.hpp"
+#include "task.hpp"
 
 void FIFO::init(MEMMAN *memman,int size){
 	this->size=size;
 	this->memman=memman;
+	this->task=0;
+	buf=(int *)memman->alloc(size*sizeof(int));
+	free=size;
+	flags=0;
+	w=0;
+	r=0;
+	return;
+}
+
+void FIFO::init(MEMMAN *memman,int size,Task *task){
+	this->size=size;
+	this->memman=memman;
+	this->task=task;
 	buf=(int *)memman->alloc(size*sizeof(int));
 	free=size;
 	flags=0;
@@ -13,7 +27,7 @@ void FIFO::init(MEMMAN *memman,int size){
 }
 
 void FIFO::remove(){
-	memman->free((unsigned int)buf,size*4);
+	memman->free((uintptr_t)buf,size*4);
 	return;
 }
 
@@ -25,6 +39,9 @@ int FIFO::put(int data){
 	buf[w]=data;
 	w=(w+1)%size;
 	free--;
+	if(task!=0)
+		if(task->stat!=RUNNING)
+			task_run(task);
 	return 0;
 }
 
