@@ -8,7 +8,7 @@ private:
 	int r,w,size,free,flags;
 public:
 	int *buf;
-	class Task *task;
+	struct Task *task;
 	void init(class MEMMAN *memman,int size);
 	void init(class MEMMAN *memman,int size,Task *task);
 	int put(int data);

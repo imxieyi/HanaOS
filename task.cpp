@@ -3,7 +3,6 @@
 #include "heap.hpp"
 #include "asmfunc.hpp"
 
-#define TASK_SWITCH_INTERVAL 2 //ms
 #define TASK_STACK_SIZE 64*1024
 
 TASKCTRL *taskctl;
@@ -19,20 +18,25 @@ Task *initTasking(TIMER *timer){
 	task->stat=RUNNING;
 	taskctl->running=1;
 	taskctl->now=0;
+	task->priority=2;
 	taskctl->tasks[0]=task;
 	asm volatile("movl %%cr3, %%eax; movl %%eax, %0;":"=m"(task->regs.cr3)::"%eax");
 	asm volatile("pushfl; movl (%%esp), %%eax; movl %%eax, %0; popfl;":"=m"(task->regs.eflags)::"%eax");
 	
 	//Timer
 	mt_timer=timer;
-	mt_timer->set(TASK_SWITCH_INTERVAL);
+	mt_timer->set(task->priority);
 	return task;
 }
 
-void task_run(Task *task){
-	task->stat=RUNNING;
-	taskctl->tasks[taskctl->running]=task;
-	taskctl->running++;
+void task_run(Task *task,int priority){
+	if(priority!=0)
+		task->priority=priority;
+	if(task->stat!=RUNNING){
+		task->stat=RUNNING;
+		taskctl->tasks[taskctl->running]=task;
+		taskctl->running++;
+	}
 }
 
 Task *TASKCTRL::alloc(){
@@ -55,13 +59,16 @@ Task *TASKCTRL::alloc(){
 }
 
 void mt_taskswitch(){
-	mt_timer->set(TASK_SWITCH_INTERVAL);
 	auto prev=taskctl->tasks[taskctl->now];
 	if(taskctl->running>=2){
 		taskctl->now++;
 		if(taskctl->now==taskctl->running)
 			taskctl->now=0;
-		switchTask(&prev->regs,&taskctl->tasks[taskctl->now]->regs);
+		auto task=taskctl->tasks[taskctl->now];
+		mt_timer->set(task->priority);
+		switchTask(&prev->regs,&task->regs);
+	}else{
+		mt_timer->set(prev->priority);
 	}
 }
 

@@ -12,6 +12,7 @@ enum TASKSTATUS{EMPTY,RUNNING,SLEEPING};
 typedef struct Task {
 	Registers regs;
 	TASKSTATUS stat=RUNNING;
+	int priority;
 } __attribute__((packed)) Task;
 
 #define MAX_TASKS 1000
@@ -28,7 +29,7 @@ public:
 extern "C" void switchTask(Registers *from, Registers *to);
 extern "C" void mt_taskswitch();
 Task *createTask(void (*main)());
-void task_run(Task *task);
+void task_run(Task *task,int priority);
 void exitTask();
 void sleepTask();
 Task *initTasking(TIMER *timer);

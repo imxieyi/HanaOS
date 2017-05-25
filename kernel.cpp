@@ -41,7 +41,7 @@ void task_c_main(){
 			sprintf(str,"Task C exited!");
 			sht_back->putstring(10,525,1,0x000000,0xffffff,str);
 			auto newtask=createTask(&task_e_main);
-			task_run(newtask);
+			task_run(newtask,4);
 			exitTask();
 		}
 		sprintf(str,"Task C: %d",count);
@@ -140,11 +140,11 @@ extern "C" void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 	auto mt_timer=timerctrl->alloc();
 	auto taska=initTasking(mt_timer);
 	auto taskb=createTask(&task_b_main);
-	task_run(taskb);
+	task_run(taskb,1);
 	auto taskc=createTask(&task_c_main);
-	task_run(taskc);
+	task_run(taskc,2);
 	auto taskd=createTask(&task_d_main);
-	task_run(taskd);
+	task_run(taskd,3);
 	
 	//Keyboard init
 	auto fifo=(FIFO*)memman->alloc_4k(sizeof(FIFO));
@@ -222,14 +222,14 @@ extern "C" void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 				timer3->setdata(0);
 				key_win->graphics->setcolor(0xffffff);
 				key_win->graphics->boxfill(cursor_x,50,cursor_x+8,65);
-				key_win->refresh(cursor_x,50,cursor_x+7,66);
+				key_win->refresh(cursor_x,50,cursor_x+8,66);
 				timer3->set(50);
 				shtctl->refreshall(170,250,180,280);
 			}else if(i==0){
 				timer3->setdata(1);
 				key_win->graphics->setcolor(0x000000);
 				key_win->graphics->boxfill(cursor_x,50,cursor_x+8,65);
-				key_win->refresh(cursor_x,50,cursor_x+7,66);
+				key_win->refresh(cursor_x,50,cursor_x+8,66);
 				timer3->set(50);
 			}
 		}
