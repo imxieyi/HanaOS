@@ -12,18 +12,42 @@
 #include "inputdevices.hpp"
 #include "fifo.hpp"
 #include "timer.hpp"
+#include "task.hpp"
 #include "hanastd.hpp"
 using namespace hanastd;
 
+MEMMAN *memman;
 SHEET *sht_back,*sht_win;
 extern TIMERCTRL *timerctrl;
 extern uint32_t kmalloc_addr;
+
+extern "C" void task_b_main(){
+	sht_back->putstring(10,500,1,0x000000,0xffffff,"task switch");
+	auto fifo=(FIFO*)memman->alloc_4k(sizeof(FIFO));
+	fifo->init(memman,128);
+	auto timer=timerctrl->alloc()->init(fifo,1);
+	timer->set(500);
+	int i;
+	for(;;){
+		io_cli();
+		if(fifo->status()==0){
+			io_stihlt();
+		}else{
+			i=fifo->get();
+			io_sti();
+			if(i==1){
+				exitTask();
+			}
+		}
+	}
+}
+
 extern "C" void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 {
 	//Memory Test & MEMMAN init
 	unsigned int memtotal;
 	memtotal=memtest(kmalloc_addr,0xbfffffff);
-	auto *memman=(MEMMAN*)kmalloc_a(sizeof(MEMMAN));
+	memman=(MEMMAN*)kmalloc_a(sizeof(MEMMAN));
 	memman->init();
 	memman->free(kmalloc_addr,memtotal-kmalloc_addr);
 	memset((void*)kmalloc_addr,0,memman->total());
@@ -96,6 +120,13 @@ extern "C" void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 	mouse_sht->slide(mx,my);
 	mouse_sht->updown(5);
 	
+	uint32_t task_b_esp;
+	task_b_esp=memman->alloc_4k(64*1024)+64*1024;
+	
+	//Multitasking
+	initTasking();
+	createTask(&task_b_main);
+	
 	auto timer1=timerctrl->alloc()->init(fifo,10);
 	auto timer2=timerctrl->alloc()->init(fifo,3);
 	auto timer3=timerctrl->alloc()->init(fifo,1);
@@ -105,10 +136,8 @@ extern "C" void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 	io_sti();
 
 	int cursor_x=16;
-	uint32_t cursor_c=0xffffff;
 
 	int i=0;
-	char ch;
 	for(;;){
 		io_cli();
 		sprintf(str,"%d",timerctrl->count);
@@ -154,8 +183,10 @@ extern "C" void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 				}
 			}else if(i==10){
 				sht_back->putstring(50,250,2,0x000000,0xcc66ccff,true,"10[sec]");
+				preempt();
 			}else if(i==3){
 				sht_back->putstring(50,250,2,0x000000,0xcc66ccff,true,"3[sec]");
+				preempt();
 			}else if(i==1){
 				timer3->setdata(0);
 				key_win->graphics->setcolor(0xffffff);

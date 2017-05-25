@@ -13,8 +13,9 @@ typedef struct {
 
 typedef struct {
     uint16_t limit;        // upper 16 bits of all selector limits
-    uint32_t base;         // address of the first gdt_entry_t
+    uintptr_t base;         // address of the first gdt_entry_t
 } __attribute__((packed)) gdt_t;
 
+void set_entry(uint8_t num, uint64_t base, uint64_t limit, uint8_t access, uint8_t gran);
 void gdt_init(void);
 #endif

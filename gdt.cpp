@@ -29,6 +29,7 @@
 
 #include <stdint.h>
 #include "gdt.hpp"
+#include <stddef.h>
 
 /*
  * Failing setting up at least the following five entries will lead
@@ -41,15 +42,14 @@
  *   - user data segment
  */
 
-gdt_t       gdt;
-gdt_entry_t gdt_entries[5];
+static gdt_t       gdt;
+static gdt_entry_t gdt_entries[3];
 
-static void
-set_entry(uint32_t num, uint32_t base, uint32_t limit, uint8_t access, uint8_t gran)
+void set_entry(uint8_t num, uint64_t base, uint64_t limit, uint8_t access, uint8_t gran)
 {
     gdt_entries[num].base_low     = (base & 0xffff);
     gdt_entries[num].base_middle  = (base >> 16) & 0xff;
-    gdt_entries[num].base_high    = (uint8_t)(base >> 24) & 0xff;
+    gdt_entries[num].base_high    = (base >> 24) & 0xff;
 
     gdt_entries[num].limit_low    = (limit & 0xffff);
     gdt_entries[num].granularity  = (limit >> 16) & 0x0f;
@@ -58,21 +58,18 @@ set_entry(uint32_t num, uint32_t base, uint32_t limit, uint8_t access, uint8_t g
      * gdt_entries[num].granularity |= (gran & 0xf0);
      * Shut up, gcc -Wconversion.
      */
-    gdt_entries[num].granularity  = (uint8_t)(gdt_entries[num].granularity | (gran & 0xf0));
+    gdt_entries[num].granularity  |= gran & 0xf0;
     gdt_entries[num].access       = access;
 }
 
-void
-gdt_init(void)
+void gdt_init(void)
 {
-    gdt.limit = (sizeof (gdt_entry_t) * 5) - 1;
-    gdt.base  = (uint32_t)&gdt_entries;
+    gdt.limit = sizeof(gdt_entries)*3 - 1;
+    gdt.base  = (uintptr_t)&gdt_entries;
 
-    set_entry(0, 0, 0,          0,    0   );  // null segment
+	set_entry(0, 0, 0, 0, 0);//Null segment
     set_entry(1, 0, 0xffffffff, 0x9a, 0xcf);  // kernel code segment
     set_entry(2, 0, 0xffffffff, 0x92, 0xcf);  // kernel data segment
-    set_entry(3, 0, 0xffffffff, 0xfa, 0xcf);  // user mode code segment
-    set_entry(4, 0, 0xffffffff, 0xf2, 0xcf);  // user mode data segment
 
-    gdt_flush((uint32_t)&gdt);
+    gdt_flush((uintptr_t)&gdt);
 }
