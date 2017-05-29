@@ -30,8 +30,8 @@ void GRAPHICS::setcolor(uint32_t c,bool withalpha){
 }
 
 void GRAPHICS::boxfill(int x0,int y0,int x1,int y1){
-	for(int x=x0;x<=x1;x++)
-		for(int y=y0;y<=y1;y++)
+	for(int y=y0;y<=y1;y++)
+		for(int x=x0;x<=x1;x++)
 			vram[y*width+x]=color;
 }
 
@@ -54,8 +54,8 @@ void GRAPHICS::putstr(const char *str,int scale,int x,int y){
 void GRAPHICS::show_bgimg(){
     uint32_t pixel=0;
     uint8_t r,g,b;
-	for(int x=0;x<width;x++)
-		for(int y=0;y<height;y++){
+	for(int y=0;y<height;y++)
+		for(int x=0;x<width;x++){
             pixel=bgimg[y+x*768];
             r=(pixel&0xff0000)>>16;
             g=(pixel&0xff00)>>8;
@@ -81,8 +81,8 @@ void GRAPHICS::init_window(const char *title){
 void GRAPHICS::init_mouse_cursor(){
     uint32_t pixel=0;
     uint8_t r,g,b,a;
-	for(int x=0;x<width;x++)
-		for(int y=0;y<height;y++){
+	for(int y=0;y<height;y++)
+		for(int x=0;x<width;x++){
             pixel=cursor[y+x*height];
             r=(pixel&0xff0000)>>16;
             g=(pixel&0xff00)>>8;

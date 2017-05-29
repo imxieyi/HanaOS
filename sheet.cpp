@@ -3,6 +3,7 @@
 #include "heap.hpp"
 #include "graphics.hpp"
 #include "sheet.hpp"
+using namespace hanastd;
 
 //图层控制
 SHEETCTRL *sheetctrl_init(class MEMMAN *memman,vbe_mode_info_t *vbeinfo){
@@ -32,6 +33,7 @@ SHEET *SHEETCTRL::allocsheet(int xsize,int ysize){
 			SHEET *sht=&sheets0[i];
 			sht->graphics=(GRAPHICS *)memman->alloc_4k(sizeof(GRAPHICS));
 			uint32_t *buf=(uint32_t *)memman->alloc_4k(xsize*ysize*4);
+			memset(buf,0,xsize*ysize*4);
 			if(buf==0){
 				return 0;
 			}
@@ -98,8 +100,8 @@ void SHEETCTRL::refreshall(int vx0, int vy0, int vx1, int vy1){
 	vy0=vy0<0?0:vy0;
 	vx1=vx1>=xsize?(xsize-1):vx1;
 	vy1=vy1>=ysize?(ysize-1):vy1;
-	for(int x=vx0;x<=vx1;x++)
-		for(int y=vy0;y<=vy1;y++)
+	for(int y=vy0;y<=vy1;y++)
+		for(int x=vx0;x<=vx1;x++)
 			refreshpixel(x,y,top);
 	return;
 }
@@ -116,7 +118,7 @@ void SHEET::slide(int vx0,int vy0){
 }
 
 void SHEET::putstring(int x,int y,int scale,uint32_t f,uint32_t b,char *s){
-	int l=hanastd::strlen(s);
+	int l=strlen(s);
 	graphics->setcolor(b);
 	graphics->boxfill(x,y,x+l*8*scale,y+16*scale);
 	graphics->setcolor(f);
@@ -127,7 +129,7 @@ void SHEET::putstring(int x,int y,int scale,uint32_t f,uint32_t b,char *s){
 }
 
 void SHEET::putstring(int x,int y,int scale,uint32_t f,uint32_t b,bool withalpha,char *s){
-	int l=hanastd::strlen(s);
+	int l=strlen(s);
 	graphics->setcolor(b,true);
 	graphics->boxfill(x,y,x+l*8*scale,y+16*scale);
 	graphics->setcolor(f);
