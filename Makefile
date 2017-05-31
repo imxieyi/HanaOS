@@ -16,9 +16,7 @@ ASMOBJ	= $(addprefix $(BUILD)/,$(notdir $(ASMSRC:.asm=.a.o)))
 DEPS	= $(addprefix $(BUILD)/,$(notdir $(CXXSRC:.cpp=.d)))
 
 define colorecho
-      @tput setaf 6
-      @echo -e $1
-      @tput sgr0
+      @echo -e "\033[36m$1\033[0m"
 endef
 
 default: iso
@@ -28,7 +26,7 @@ $(BUILD):
 	@mkdir -p $(BUILD)
 
 $(BUILD)/%.d: %.cpp | $(BUILD)
-	$(call colorecho,"GENDEP\t$<")
+	$(call colorecho,GENDEP\t$<)
 	@set -e;rm -f $@; \
 	$(CXX) -MM -Iinclude $< > $@.$$$$; \
 	sed 's,.*\.o[ :]*,$*.o $@ : ,g' < $@.$$$$ > $@; \
@@ -36,19 +34,19 @@ $(BUILD)/%.d: %.cpp | $(BUILD)
 	rm -f $@.$$$$
 
 $(BUILD)/%.a.o: %.asm
-	$(call colorecho,"NASM\t$<")
+	$(call colorecho,NASM\t$<)
 	@$(NASM) -f elf $*.asm -o $(BUILD)/$*.a.o
 
 $(BUILD)/%.o: %.cpp
-	$(call colorecho,"CXX\t$<")
+	$(call colorecho,CXX\t$<)
 	@$(CXX) -c $*.cpp -o $(BUILD)/$*.o $(CXXFLAGS)
 
 $(KERNEL): $(ASMOBJ) $(CXXOBJ)
-	$(call colorecho,"Link kernel...")
+	$(call colorecho,Link kernel...)
 	@$(LD) $(ASMOBJ) $(CXXOBJ) -T link.ld -o $(KERNEL) $(LDFLAGS)
 
 $(ISOFILE): $(KERNEL)
-	$(call colorecho,"Generate iso image...")
+	$(call colorecho,Generate iso image...)
 	@cp $(KERNEL) $(ISODIR)/boot/
 	@strip $(ISODIR)/boot/kernel
 	@grub-mkrescue -d /usr/lib/grub/i386-pc -o $(ISOFILE) $(ISODIR)
