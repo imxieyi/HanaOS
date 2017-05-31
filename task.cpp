@@ -10,6 +10,10 @@ TIMER *mt_timer;
 
 extern MEMMAN *memman;
 
+void task_idle(){
+	for(;;)io_hlt();
+}
+
 Task *task_now(){
 	auto tl=&taskctl->level[taskctl->now_lv];
 	return tl->tasks[tl->now];
@@ -59,6 +63,10 @@ Task *initTasking(TIMER *timer){
 	task_switchsub();
 	asm volatile("movl %%cr3, %%eax; movl %%eax, %0;":"=m"(task->regs.cr3)::"%eax");
 	asm volatile("pushfl; movl (%%esp), %%eax; movl %%eax, %0; popfl;":"=m"(task->regs.eflags)::"%eax");
+
+	//Idle task
+	auto idle=createTask(&task_idle);
+	task_run(idle,MAX_TASKLEVELS-1,1);
 	
 	//Timer
 	mt_timer=timer;

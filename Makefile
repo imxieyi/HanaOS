@@ -1,37 +1,52 @@
-CC	= gcc
 CXX	= g++
 LD	= ld
 NASM	= nasm
 QEMU	= qemu-system-i386
 BUILD	= build
 ISODIR	= isodir
+KERNEL	= $(BUILD)/kernel
 ISOFILE	= $(BUILD)/hanaos.iso
-EFIBIOS	= /usr/share/ovmf/OVMF.fd
-CCFLAGS	= -nostdlib -nodefaultlibs -lgcc -m32
 CXXFLAGS= -ffreestanding -fno-exceptions -fno-rtti -m32 -fpermissive -Iinclude
 LDFLAGS	= -m elf_i386 -N
-OBJECTS	= $(BUILD)/kernel.o $(BUILD)/boot.a.o $(BUILD)/graphics.o $(BUILD)/gdt.o $(BUILD)/idt.o $(BUILD)/table_flush.a.o $(BUILD)/int_stubs.a.o $(BUILD)/isr.o $(BUILD)/irq.o $(BUILD)/fifo.o $(BUILD)/keyboard.o $(BUILD)/mouse.o $(BUILD)/timer.o $(BUILD)/paging.a.o $(BUILD)/paging.o $(BUILD)/heap.o $(BUILD)/sheet.o $(BUILD)/hanastd.o $(BUILD)/asmfunc.a.o $(BUILD)/task.o
+CXXSRC	= $(wildcard *.cpp)
+ASMSRC	= $(wildcard *.asm)
+CXXOBJ	= $(addprefix $(BUILD)/,$(notdir $(CXXSRC:.cpp=.o)))
+ASMOBJ	= $(addprefix $(BUILD)/,$(notdir $(ASMSRC:.asm=.a.o)))
+DEPS	= $(addprefix $(BUILD)/,$(notdir $(CXXSRC:.cpp=.d)))
 
-default:
-	mkdir -p build
-	make iso
+default: iso
 
-%.a.o: %.asm Makefile
+ifneq ($(MAKECMDGOALS),clean)
+    include $(DEPS)
+endif
+
+$(BUILD):
+	mkdir -p $(BUILD)
+
+$(BUILD)/%.d: %.cpp
+	set -e;rm -f $@; \
+	$(CXX) -MM -Iinclude $< > $@.$$$$; \
+	sed 's,.*\.o[ :]*,$*.o $@ : ,g' < $@.$$$$ > $@; \
+	rm -f $@.$$$$
+
+$(BUILD)/%.a.o: %.asm
 	$(NASM) -f elf $*.asm -o $(BUILD)/$*.a.o
 
-%.o: %.cpp Makefile
+$(BUILD)/%.o: %.cpp
 	$(CXX) -c $*.cpp -o $(BUILD)/$*.o $(CXXFLAGS)
 
-kernel: boot.a.o asmfunc.a.o isr.o irq.o table_flush.a.o fifo.o keyboard.o mouse.o int_stubs.a.o graphics.o gdt.o idt.o hanastd.o sheet.o paging.a.o paging.o heap.o timer.o task.o kernel.o link.ld
-	$(LD) $(OBJECTS) -T link.ld -o $(BUILD)/kernel $(LDFLAGS)
+$(KERNEL): $(ASMOBJ) $(CXXOBJ)
+	$(LD) $(ASMOBJ) $(CXXOBJ) -T link.ld -o $(KERNEL) $(LDFLAGS)
 
-iso: kernel
-	cp $(BUILD)/kernel $(ISODIR)/boot/
+$(ISOFILE): $(KERNEL)
+	cp $(KERNEL) $(ISODIR)/boot/
 	strip $(ISODIR)/boot/kernel
 	grub-mkrescue -d /usr/lib/grub/i386-pc -o $(ISOFILE) $(ISODIR)
 
-run:
+iso: $(BUILD) $(ISOFILE)
+
+run: iso
 	$(QEMU) -m 32 -vga std -cdrom $(ISOFILE)
 
 clean:
-	rm $(BUILD)/*
+	rm -rf $(BUILD)

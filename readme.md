@@ -6,7 +6,7 @@
 
 必须用32位MBR的grub2生成镜像，否则无法获得正确的显存地址（这个坑就不要去踩了，无解），轻则切换分辨率后无显示，重则导致虚拟机崩溃。
 
-依赖工具：nasm, g++, make, xorriso, mtools, qemu
+依赖工具：nasm, g++, g++-multilib, make, xorriso, mtools, qemu
 
 ~~推荐环境：MBR引导启动的32位Ubuntu~~
 

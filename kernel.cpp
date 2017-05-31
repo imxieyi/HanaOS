@@ -135,16 +135,16 @@ extern "C" void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 	mouse_sht->graphics->init_mouse_cursor();
 	mouse_sht->slide(mx,my);
 	mouse_sht->updown(5);
-	
+
 	//Multitasking
 	auto mt_timer=timerctrl->alloc();
 	auto taska=initTasking(mt_timer);
 	auto taskb=createTask(&task_b_main);
-	task_run(taskb,1,1);
+	//task_run(taskb,1,1);
 	auto taskc=createTask(&task_c_main);
-	task_run(taskc,1,2);
+	//task_run(taskc,1,2);
 	auto taskd=createTask(&task_d_main);
-	task_run(taskd,1,3);
+	//task_run(taskd,1,3);
 	
 	//Keyboard init
 	auto fifo=(FIFO*)memman->alloc_4k(sizeof(FIFO));

@@ -56,7 +56,7 @@ void GRAPHICS::show_bgimg(){
     uint8_t r,g,b;
 	for(int y=0;y<height;y++)
 		for(int x=0;x<width;x++){
-            pixel=bgimg[y+x*768];
+            pixel=bgimg[y*1024+x];
             r=(pixel&0xff0000)>>16;
             g=(pixel&0xff00)>>8;
             b=pixel&0xff;
