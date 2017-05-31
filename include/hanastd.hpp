@@ -11,4 +11,5 @@ namespace hanastd {
 	int sprintf(char *s, const char *format, ...);
 	void *memset(void *s, int c, uint32_t n);
 	void strncpy(const char *src, char *dest, int n);
+	bool strncmp(const char *src, const char *dest, int n);
 }

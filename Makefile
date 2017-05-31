@@ -14,6 +14,7 @@ ASMSRC	= $(wildcard *.asm)
 CXXOBJ	= $(addprefix $(BUILD)/,$(notdir $(CXXSRC:.cpp=.o)))
 ASMOBJ	= $(addprefix $(BUILD)/,$(notdir $(ASMSRC:.asm=.a.o)))
 DEPS	= $(addprefix $(BUILD)/,$(notdir $(CXXSRC:.cpp=.d)))
+APPS	= $(wildcard apps/*.cpp)
 
 define colorecho
       @echo -e "\033[36m$1\033[0m"
@@ -41,9 +42,12 @@ $(BUILD)/%.o: %.cpp
 	$(call colorecho,CXX\t$<)
 	@$(CXX) -c $*.cpp -o $(BUILD)/$*.o $(CXXFLAGS)
 
-$(KERNEL): $(ASMOBJ) $(CXXOBJ)
+$(BUILD)/apps.o: $(APPS) apps/Makefile
+	make -C apps
+
+$(KERNEL): $(ASMOBJ) $(CXXOBJ) $(BUILD)/apps.o
 	$(call colorecho,Link kernel...)
-	@$(LD) $(ASMOBJ) $(CXXOBJ) -T link.ld -o $(KERNEL) $(LDFLAGS)
+	@$(LD) $(ASMOBJ) $(CXXOBJ) $(BUILD)/apps.o -T link.ld -o $(KERNEL) $(LDFLAGS)
 
 $(ISOFILE): $(KERNEL)
 	$(call colorecho,Generate iso image...)

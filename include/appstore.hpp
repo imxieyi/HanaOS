@@ -1,18 +1,14 @@
 #pragma once
 #include <stdint.h>
 
+typedef void* (* app_func_t)(char *, char *);
+
 typedef struct {
 	char name[32];
-	uintptr_t entry;
+	app_func_t entry;
+	bool newtask=false;
 }App;
 
-#define MAX_APPS 100
-
-class AppStore {
-private:
-	App apps[100];
-	int pub_offset=0;
-public:
-	void publish(const char *name, uintptr_t entry);
-	uintptr_t search(const char *name);
-};
+void appstore_init();
+void appstore_publish(const char *name, app_func_t entry);
+app_func_t appstore_search(const char *name);

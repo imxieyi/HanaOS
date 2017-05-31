@@ -258,3 +258,11 @@ void hanastd::strncpy(const char *src, char *dest, int n){
 		*(dest+i)=*(src+i);
 	*(dest+n)=0;
 }
+
+bool hanastd::strncmp(const char *src, const char *dest, int n){
+	if(n==0)return false;
+	for(int i=0;i<n;i++)
+		if(*(dest+i)!=*(src+i))
+			return false;
+	return true;
+}

@@ -12,11 +12,13 @@
 #include "fifo.hpp"
 #include "timer.hpp"
 #include "task.hpp"
+#include "appstore.hpp"
 #include "hanastd.hpp"
 using namespace hanastd;
 
 MEMMAN *memman;
 SHEET *sht_back,*sht_win;
+unsigned int memtotal;
 extern TIMERCTRL *timerctrl;
 extern uint32_t kmalloc_addr;
 extern void task_console(void *arg);
@@ -25,7 +27,6 @@ extern void task_console(void *arg);
 extern "C" void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 {
 	//Memory Test & MEMMAN init
-	unsigned int memtotal;
 	memtotal=memtest(kmalloc_addr,0xbfffffff);
 	memman=(MEMMAN*)kmalloc_a(sizeof(MEMMAN));
 	memman->init();
@@ -84,6 +85,9 @@ extern "C" void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 	struct MOUSE_DEC mdec;
 	enable_mouse(fifo,512,&mdec);
 	register_interrupt_handler(IRQ12,&mouse_handler);
+	
+	//AppStore
+	appstore_init();
 	
 	auto timer3=timerctrl->alloc()->init(fifo,1);
 	timer3->set(50);
