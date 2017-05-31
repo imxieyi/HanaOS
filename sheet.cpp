@@ -138,6 +138,21 @@ void SHEET::putstring(int x,int y,int scale,uint32_t f,uint32_t b,bool withalpha
 		sctrl->refreshall(x+vx0,y+vy0,x+vx0+l*8*scale,y+vy0+16*scale);
 	return;
 }
+void SHEET::window_inactive(){
+	graphics->window_inactive();
+	refresh(1,1,graphics->width-2,24);
+	refresh(1,25,2,graphics->height-2);
+	refresh(graphics->width-3,25,graphics->width-2,graphics->height-2);
+	refresh(3,height-3,graphics->width-3,graphics->height-2);
+}
+
+void SHEET::window_active(){
+	graphics->window_active();
+	refresh(1,1,graphics->width-2,24);
+	refresh(1,25,2,graphics->height-2);
+	refresh(graphics->width-3,25,graphics->width-2,graphics->height-2);
+	refresh(3,height-3,graphics->width-3,graphics->height-2);
+}
 
 void SHEET::refresh(int bx0,int by0,int bx1,int by1){
 	sctrl->refreshall(vx0+bx0,vy0+by0,vx0+bx1,vy0+by1);

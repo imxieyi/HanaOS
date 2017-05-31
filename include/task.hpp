@@ -13,6 +13,7 @@ typedef struct Task {
 	Registers regs;
 	TASKSTATUS stat=RUNNING;
 	int level,priority;
+	FIFO *fifo;
 } __attribute__((packed)) Task;
 
 #define MAX_TASKS 1000
@@ -36,6 +37,7 @@ public:
 
 extern "C" void switchTask(Registers *from, Registers *to);
 extern "C" void mt_taskswitch();
+Task *task_now();
 Task *createTask(void (*main)(void*),void *arg);
 void task_run(Task *task,int level,int priority);
 void exitTask();

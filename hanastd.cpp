@@ -252,3 +252,9 @@ void *hanastd::memset(void *s, int c, uint32_t n){
 
     return s;
 }
+
+void hanastd::strncpy(const char *src, char *dest, int n){
+	for(int i=0;i<n;i++)
+		*(dest+i)=*(src+i);
+	*(dest+n)=0;
+}

@@ -16,6 +16,8 @@ public:
 	void putstring(int x,int y,int scale,uint32_t f,uint32_t b,char *s);
 	void putstring(int x,int y,int scale,uint32_t f,uint32_t b,bool withalpha,char *s);
 	void free();
+	void window_inactive();
+	void window_active();
 };
 class SHEETCTRL {
 private:

@@ -8,11 +8,13 @@ void init_graphics(vbe_mode_info_t *vbeinfo);
 
 class GRAPHICS {
 private:
-	uint16_t width,height;
 	uint8_t bpp;
 	uint16_t fb_stride32;
 	uint32_t color;
+	char title[32];
+	void draw_closebtn();
 public:
+	uint16_t width,height;
 	uint32_t *vram;
 	uint32_t bgcolor;
 	void init(uint32_t *vram,uint16_t width,uint16_t height,uint8_t bpp,uint16_t fb_stride32);
@@ -29,6 +31,9 @@ public:
 	void putstr(const char *str,int scale,int x,int y);
 	void putblock8_8(int pxsize, int pysize, int px0, int py0, char *buf, int bxsize);
 	void make_textbox(int x0, int y0,int x1, int y1, uint32_t bgcolor);
+	void make_textbox(int x0, int y0,int x1, int y1, uint32_t bgcolor, bool withalpha);
+	void window_inactive();
+	void window_active();
 };
 
 #endif
