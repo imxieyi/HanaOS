@@ -1,5 +1,4 @@
-#ifndef _GRAPHICS_HPP
-#define _GRAPHICS_HPP
+#pragma once
 #include <stdint.h>
 #include "multiboot.h"
 
@@ -35,5 +34,3 @@ public:
 	void window_inactive();
 	void window_active();
 };
-
-#endif

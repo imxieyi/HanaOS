@@ -1,5 +1,4 @@
-#ifndef _FIFO_HPP
-#define _FIFO_HPP
+#pragma once
 
 #define FLAGS_OVERRUN	0x0001
 class FIFO {
@@ -16,5 +15,3 @@ public:
 	void remove();
 	int status();
 };
-
-#endif

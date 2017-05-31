@@ -1,5 +1,4 @@
-#ifndef _SHEET_HPP
-#define _SHEET_HPP
+#pragma once
 
 #define MAX_SHEETS		256
 #define SHEET_USE		1
@@ -34,6 +33,4 @@ public:
 	void setmemman(class MEMMAN *memman);
 	void refreshall(int vx0, int vy0, int vx1, int vy1);
 };
-struct SHEETCTRL *sheetctrl_init(class MEMMAN *memman,vbe_mode_info_t *vbeinfo);
-
-#endif
+SHEETCTRL *sheetctrl_init(class MEMMAN *memman,vbe_mode_info_t *vbeinfo);

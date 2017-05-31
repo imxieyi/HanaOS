@@ -1,5 +1,4 @@
-#ifndef _TASK_HPP
-#define _TASK_HPP
+#pragma once
 
 #include <stdint.h>
 #include "timer.hpp"
@@ -44,5 +43,3 @@ void exitTask();
 void sleepTask();
 Task *initTasking(TIMER *timer);
 void preempt();
-
-#endif

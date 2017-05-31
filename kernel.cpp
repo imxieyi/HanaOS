@@ -109,7 +109,8 @@ extern "C" void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 					mouse_sht->slide(mx,my);
 				}
 			}else if(i>=256&&i<=511){
-				task_con->fifo->put(i);
+				if(task_con->fifo!=NULL)
+					task_con->fifo->put(i);
 			}
 		}
 	}

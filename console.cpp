@@ -28,6 +28,23 @@ void task_console(void *arg){
 	int cursor_x=8,cursor_y=30;
 	int i;
 	char s[32];
+
+	auto push_char = [&](char ch) {
+		if(ch=='\n'){
+			sht->putstring(cursor_x,cursor_y,1,0,CONSOLE_BG,true," ");
+			cursor_y+=16;
+			cursor_x=8;
+			sht->putstring(cursor_x,cursor_y,1,0x74ff84,CONSOLE_BG,true,"$");
+			cursor_x=24;
+		}else if(cursor_x<sht->graphics->width-22){
+			char s[2];
+			s[0]=ch;
+			s[1]=0;
+			sht->putstring(cursor_x,cursor_y,1,FONT_COLOR,CONSOLE_BG,true,s);
+			cursor_x+=8;
+		}
+	};
+
 	sht->putstring(cursor_x,cursor_y,1,0x74ff84,CONSOLE_BG,true,"$");
 	cursor_x+=16;
 	for(;;){
@@ -56,13 +73,11 @@ void task_console(void *arg){
 						cursor_x-=8;
 						sht->putstring(cursor_x,cursor_y,1,0,CONSOLE_BG,true," ");
 					}
+				}else if(i == 0x1c + 256){//回车键
+					push_char('\n');
 				}else{
-					if(cursor_x<sht->graphics->width-22&&getchar(i-256)!=0){
-						s[0]=getchar(i-256);
-						s[1]=0;
-						sht->putstring(cursor_x,cursor_y,1,FONT_COLOR,CONSOLE_BG,true,s);
-						cursor_x+=8;
-					}
+					if(getchar(i-256)!=0)
+						push_char(getchar(i-256));
 				}
 			}
 		}

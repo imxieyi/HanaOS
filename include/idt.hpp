@@ -1,5 +1,4 @@
-#ifndef _IDT_HPP
-#define _IDT_HPP
+#pragma once
 
 extern "C" void idt_flush(uint32_t);
 
@@ -72,4 +71,3 @@ typedef struct {
 } __attribute__((packed)) idt_t;
 
 void idt_init(void);
-#endif

@@ -1,5 +1,4 @@
-#ifndef _INPUTDEVICES_HPP
-#define _INPUTDEVICES_HPP
+#pragma once
 
 #include "fifo.hpp"
 #include "isr.hpp"
@@ -40,5 +39,3 @@ struct MOUSE_DEC {
 void enable_mouse(FIFO *fifo,int data0,struct MOUSE_DEC *mdec);
 int mouse_decode(struct MOUSE_DEC *mdec,uint8_t dat);
 void mouse_handler(registers_t regs);
-
-#endif

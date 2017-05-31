@@ -1,5 +1,4 @@
-#ifndef _ASMFUNC_HPP
-#define _ASMFUNC_HPP
+#pragma once
 
 #ifdef __cplusplus
 extern "C"{
@@ -24,5 +23,4 @@ void store_cr0(int cr0);
 
 #ifdef __cplusplus
 }
-#endif
 #endif

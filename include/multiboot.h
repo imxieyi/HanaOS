@@ -1,5 +1,3 @@
-#ifndef _MULTIBOOT_H
-#define _MULTIBOOT_H
 #pragma once
 #ifdef __cplusplus
 extern "C"{
@@ -150,5 +148,4 @@ typedef enum
 
 #ifdef __cplusplus
 }
-#endif
 #endif

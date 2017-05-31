@@ -1,5 +1,4 @@
-#ifndef _TIMER_HPP
-#define _TIMER_HPP
+#pragma once
 
 #include "fifo.hpp"
 #include "isr.hpp"
@@ -33,5 +32,3 @@ public:
 };
 void init_pit();
 void timer_handler(registers_t regs);
-
-#endif

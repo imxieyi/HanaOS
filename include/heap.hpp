@@ -1,5 +1,4 @@
-#ifndef _HEAP_HPP
-#define _HEAP_HPP
+#pragma once
 
 #include <stddef.h>
 #include <stdint.h>
@@ -32,5 +31,3 @@ public:
 extern "C" int load_cr0(void);
 extern "C" void store_cr0(int cr0);
 extern "C" unsigned int memtest(unsigned int start,unsigned int end);
-
-#endif

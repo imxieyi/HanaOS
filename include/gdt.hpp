@@ -1,5 +1,4 @@
-#ifndef _GDT_HPP
-#define _GDT_HPP
+#pragma once
 extern "C" void gdt_flush(uint32_t);
 
 typedef struct {
@@ -18,4 +17,3 @@ typedef struct {
 
 void set_entry(uint8_t num, uint64_t base, uint64_t limit, uint8_t access, uint8_t gran);
 void gdt_init(void);
-#endif

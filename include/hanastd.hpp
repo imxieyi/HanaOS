@@ -1,6 +1,4 @@
-#ifndef _HANASTD_HPP
-#define _HANASTD_HPP
-
+#pragma once
 #include <stdint.h>
 
 namespace hanastd {
@@ -14,5 +12,3 @@ namespace hanastd {
 	void *memset(void *s, int c, uint32_t n);
 	void strncpy(const char *src, char *dest, int n);
 }
-
-#endif

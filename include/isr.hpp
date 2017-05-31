@@ -1,5 +1,4 @@
-#ifndef _ISR_HPP
-#define _ISR_HPP
+#pragma once
 
 #define IRQ0  32
 #define IRQ1  33
@@ -32,4 +31,3 @@ typedef void (*isr_t)(registers_t);
 extern "C" void isr_handler(registers_t regs);
 extern "C" void irq_handler(registers_t regs);
 void register_interrupt_handler(uint8_t n, isr_t handler);
-#endif
