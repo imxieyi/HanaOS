@@ -36,7 +36,7 @@ public:
 
 extern "C" void switchTask(Registers *from, Registers *to);
 extern "C" void mt_taskswitch();
-Task *createTask(void (*main)());
+Task *createTask(void (*main)(void*),void *arg);
 void task_run(Task *task,int level,int priority);
 void exitTask();
 void sleepTask();

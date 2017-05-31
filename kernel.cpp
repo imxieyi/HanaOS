@@ -20,51 +20,55 @@ SHEET *sht_back,*sht_win;
 extern TIMERCTRL *timerctrl;
 extern uint32_t kmalloc_addr;
 
-void task_b_main(){
+void task_b_main(void *arg){
+	auto sht=(SHEET*)arg;
 	int count=0;
 	char str[20];
 	for(;;){
 		count++;
 		sprintf(str,"Task B: %d",count);
-		sht_back->putstring(10,500,1,0x000000,0xffffff,str);
+		sht->putstring(10,500,1,0x000000,0xffffff,str);
 	}
 }
 
-void task_e_main();
-void task_c_main(){
+void task_e_main(void *arg);
+void task_c_main(void *arg){
+	auto sht=(SHEET*)arg;
 	int count=0;
 	char str[20];
 	for(;;){
 		count++;
 		if(count==1000){
 			sprintf(str,"Task C exited!");
-			sht_back->putstring(10,525,1,0x000000,0xffffff,str);
-			auto newtask=createTask(&task_e_main);
+			sht->putstring(10,525,1,0x000000,0xffffff,str);
+			auto newtask=createTask(&task_e_main,sht);
 			task_run(newtask,1,4);
 			exitTask();
 		}
 		sprintf(str,"Task C: %d",count);
-		sht_back->putstring(10,525,1,0x000000,0xffffff,str);
+		sht->putstring(10,525,1,0x000000,0xffffff,str);
 	}
 }
 
-void task_d_main(){
+void task_d_main(void *arg){
+	auto sht=(SHEET*)arg;
 	int count=0;
 	char str[20];
 	for(;;){
 		count++;
 		sprintf(str,"Task D: %d",count);
-		sht_back->putstring(10,550,1,0x000000,0xffffff,str);
+		sht->putstring(10,550,1,0x000000,0xffffff,str);
 	}
 }
 
-void task_e_main(){
+void task_e_main(void *arg){
+	auto sht=(SHEET*)arg;
 	int count=0;
 	char str[20];
 	for(;;){
 		count++;
 		sprintf(str,"Task E: %d",count);
-		sht_back->putstring(10,575,1,0x000000,0xffffff,str);
+		sht->putstring(10,575,1,0x000000,0xffffff,str);
 	}
 }
 
@@ -88,7 +92,6 @@ extern "C" void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 
 	//Init background
 	sht_back=shtctl->allocsheet(shtctl->xsize,shtctl->ysize);
-// 	sht_back->graphics->show_bgimg();
 	sht_back->slide(0,0);
 	sht_back->updown(1);
 	sht_back->graphics->setcolor(0x00000000,true);
@@ -137,12 +140,12 @@ extern "C" void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 	//Multitasking
 	auto mt_timer=timerctrl->alloc();
 	auto taska=initTasking(mt_timer);
-	auto taskb=createTask(&task_b_main);
-	//task_run(taskb,1,1);
-	auto taskc=createTask(&task_c_main);
-	//task_run(taskc,1,2);
-	auto taskd=createTask(&task_d_main);
-	//task_run(taskd,1,3);
+	auto taskb=createTask(&task_b_main,sht_back);
+	task_run(taskb,1,1);
+	auto taskc=createTask(&task_c_main,sht_back);
+	task_run(taskc,1,2);
+	auto taskd=createTask(&task_d_main,sht_back);
+	task_run(taskd,1,3);
 	
 	//Keyboard init
 	auto fifo=(FIFO*)memman->alloc_4k(sizeof(FIFO));

@@ -10,7 +10,7 @@ TIMER *mt_timer;
 
 extern MEMMAN *memman;
 
-void task_idle(){
+void task_idle(void *arg){
 	for(;;)io_hlt();
 }
 
@@ -65,7 +65,7 @@ Task *initTasking(TIMER *timer){
 	asm volatile("pushfl; movl (%%esp), %%eax; movl %%eax, %0; popfl;":"=m"(task->regs.eflags)::"%eax");
 
 	//Idle task
-	auto idle=createTask(&task_idle);
+	auto idle=createTask(&task_idle,NULL);
 	task_run(idle,MAX_TASKLEVELS-1,1);
 	
 	//Timer
@@ -100,7 +100,7 @@ Task *TASKCTRL::alloc(){
 			task->regs.edi=0;
 			task->regs.eflags=taskctl->tasks0[0].regs.eflags;
 			task->regs.cr3=taskctl->tasks0[0].regs.cr3;
-			task->regs.esp=memman->alloc_4k(TASK_STACK_SIZE)+TASK_STACK_SIZE;
+			task->regs.esp=memman->alloc_4k(TASK_STACK_SIZE)+TASK_STACK_SIZE-8;
 			return task;
 		}
 	return 0;
@@ -121,9 +121,10 @@ void mt_taskswitch(){
 		switchTask(&nowtask->regs,&newtask->regs);
 }
 
-Task *createTask(void (*main)()){
+Task *createTask(void (*main)(void*),void *arg){
 	auto task=taskctl->alloc();
 	task->regs.eip=(uintptr_t)main;
+	*((uint32_t*)(task->regs.esp+4))=(uintptr_t)arg;
 	return task;
 }
 
