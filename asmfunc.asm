@@ -2,7 +2,7 @@
 	global io_hlt,io_cli,io_sti,io_stihlt,io_in8,io_in16,io_in32
 	global io_out8,io_out16,io_out32,io_load_eflags,io_store_eflags
 	global load_gdtr,load_idtr,load_cr0,store_cr0,memtest
-	global switchTask
+	global switchTask, poweroff, reboot
 section .text
 
 io_hlt:
@@ -170,4 +170,14 @@ switchTask:
 	xchg	eax,[esp]
 	mov		eax,[eax]
 	sti
+	ret
+
+reboot:
+	mov al, 0xFE
+	out 0x64, al
+	ret
+
+poweroff:
+	cli
+	hlt
 	ret

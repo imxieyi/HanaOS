@@ -20,6 +20,8 @@ void load_gdtr(int limit,int addr);
 void load_idtr(int limit,int addr);
 int load_cr0();
 void store_cr0(int cr0);
+void poweroff();
+void reboot();
 
 #ifdef __cplusplus
 }

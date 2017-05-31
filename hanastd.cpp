@@ -1,4 +1,5 @@
 #include <stdarg.h>
+#include <stddef.h>
 #include <stdint.h>
 #include <limits.h>
 #include "hanastd.hpp"
@@ -265,4 +266,16 @@ bool hanastd::strncmp(const char *src, const char *dest, int n){
 		if(*(dest+i)!=*(src+i))
 			return false;
 	return true;
+}
+
+int hanastd::memcmp(const void* aptr, const void* bptr, size_t size) {
+	const unsigned char* a = (const unsigned char*) aptr;
+	const unsigned char* b = (const unsigned char*) bptr;
+	for (size_t i = 0; i < size; i++) {
+		if (a[i] < b[i])
+			return -1;
+		else if (b[i] < a[i])
+			return 1;
+	}
+	return 0;
 }
