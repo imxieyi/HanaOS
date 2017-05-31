@@ -22,7 +22,7 @@ typedef struct multiboot_header
 
   /* These are only valid if MULTIBOOT_VIDEO_MODE is set. */
   unsigned long mode_type;
-  unsigned long width;
+  unsigned long wldth;
   unsigned long height;
   unsigned long depth;
 } multiboot_header_t;

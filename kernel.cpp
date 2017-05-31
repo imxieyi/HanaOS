@@ -4,7 +4,7 @@
 #include "multiboot.h"
 #include "graphics.hpp"
 #include "gdt.hpp"
-#include "idt.hpp"
+#include "ldt.hpp"
 #include "isr.hpp"
 #include "paging.hpp"
 #include "heap.hpp"
@@ -71,6 +71,7 @@ void task_e_main(){
 
 extern "C" void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 {
+	for(int kk=0;kk<1000000000;kk++);
 	//Memory Test & MEMMAN init
 	unsigned int memtotal;
 	memtotal=memtest(kmalloc_addr,0xbfffffff);
@@ -124,7 +125,7 @@ extern "C" void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 	timerctrl=(TIMERCTRL*)memman->alloc_4k(sizeof(TIMERCTRL));
 
 	gdt_init();
-	idt_init();
+	ldt_init();
 	init_pit();
 //	paging_init();
 	

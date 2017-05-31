@@ -1,7 +1,7 @@
 #ifndef _IDT_HPP
 #define _IDT_HPP
 
-extern "C" void idt_flush(uint32_t);
+extern "C" void ldt_flush(uint32_t);
 
 extern "C" void isr0();
 extern "C" void isr1();
@@ -64,12 +64,12 @@ typedef struct {
     uint8_t  reserved;   // always zero
     uint8_t  flags;
     uint16_t base_high;  // upper 16 bits of address to jump to if this int fires
-} __attribute__((packed)) idt_entry_t;
+} __attribute__((packed)) ldt_entry_t;
 
 typedef struct {
     uint16_t limit;
     uint32_t base;   // address of first element in gdt_t
-} __attribute__((packed)) idt_t;
+} __attribute__((packed)) ldt_t;
 
-void idt_init(void);
+void ldt_init(void);
 #endif

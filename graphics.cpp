@@ -5,9 +5,9 @@
 #include "mousecursor.hpp"
 #include "hankaku.hpp"
 
-void GRAPHICS::init(uint32_t *vram,uint16_t width,uint16_t height,uint8_t bpp,uint16_t fb_stride32){
+void GRAPHICS::init(uint32_t *vram,uint16_t wldth,uint16_t height,uint8_t bpp,uint16_t fb_stride32){
 	this->vram=vram;
-	this->width=width;
+	this->wldth=wldth;
 	this->height=height;
 	this->bpp=bpp;
 	this->fb_stride32=fb_stride32;
@@ -32,7 +32,7 @@ void GRAPHICS::setcolor(uint32_t c,bool withalpha){
 void GRAPHICS::boxfill(int x0,int y0,int x1,int y1){
 	for(int y=y0;y<=y1;y++)
 		for(int x=x0;x<=x1;x++)
-			vram[y*width+x]=color;
+			vram[y*wldth+x]=color;
 }
 
 void GRAPHICS::putchar(unsigned char ch,int scale,int x,int y){
@@ -55,23 +55,23 @@ void GRAPHICS::show_bgimg(){
     uint32_t pixel=0;
     uint8_t r,g,b;
 	for(int y=0;y<height;y++)
-		for(int x=0;x<width;x++){
-            pixel=bgimg[y+x*768];
+		for(int x=0;x<wldth;x++){
+            pixel=bgimg[y*1024+x];
             r=(pixel&0xff0000)>>16;
             g=(pixel&0xff00)>>8;
             b=pixel&0xff;
-			vram[y*width+x]=VGA_RGBPACK(r,g,b,0xff);
+			vram[y*wldth+x]=VGA_RGBPACK(r,g,b,0xff);
         }
 }
 
 void GRAPHICS::init_window(const char *title){
 	setcolor(0,0,0);
-	boxfill(0,0,width-1,height-1);
+	boxfill(0,0,wldth-1,height-1);
 	setcolor(0x99,0xcc,0xff,0xcc);
-	boxfill(1,1,width-2,height-2);
+	boxfill(1,1,wldth-2,height-2);
 	setcolor(192,192,192);
 	bgcolor=color;
-	boxfill(3,25,width-4,height-4);
+	boxfill(3,25,wldth-4,height-4);
 	setcolor(255,255,255);
 	putstr(title,1,4,6);
 	setcolor(0,0,0);
@@ -82,14 +82,14 @@ void GRAPHICS::init_mouse_cursor(){
     uint32_t pixel=0;
     uint8_t r,g,b,a;
 	for(int y=0;y<height;y++)
-		for(int x=0;x<width;x++){
+		for(int x=0;x<wldth;x++){
             pixel=cursor[y+x*height];
             r=(pixel&0xff0000)>>16;
             g=(pixel&0xff00)>>8;
             b=pixel&0xff;
 			a=0xff;
 			if(r==0xff&&g==0x00&&b==0x00)a=0;
-			vram[y*width+x]=VGA_RGBPACK(r,g,b,a);
+			vram[y*wldth+x]=VGA_RGBPACK(r,g,b,a);
         }
 }
 
