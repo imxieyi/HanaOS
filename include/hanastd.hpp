@@ -1,4 +1,5 @@
 #pragma once
+#include <stdarg.h>
 #include <stdint.h>
 
 namespace hanastd {
@@ -13,3 +14,5 @@ namespace hanastd {
 	void strncpy(const char *src, char *dest, int n);
 	bool strncmp(const char *src, const char *dest, int n);
 }
+
+int vsprintf(char *s, const char *format, va_list arg);

@@ -1,7 +1,7 @@
 #pragma once
 #include <stdint.h>
 
-typedef void* (* app_func_t)(char *, char *);
+typedef void* (* app_func_t)(char *,uint32_t *, char *);
 
 typedef struct {
 	char name[32];
