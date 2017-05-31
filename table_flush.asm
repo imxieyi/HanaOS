@@ -1,5 +1,5 @@
 global gdt_flush
-global ldt_flush
+global idt_flush
 
 gdt_flush:
     mov     eax, [esp+4]  ; get pointer to GDT
@@ -16,7 +16,7 @@ gdt_flush:
 .flush:
     ret
 
-ldt_flush:
+idt_flush:
     mov     eax, [esp+4]  ; get pointer to IDT
-    lldt    [eax]         ; load new IDT
+    lidt    [eax]         ; load new IDT
     ret

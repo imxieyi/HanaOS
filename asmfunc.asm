@@ -1,7 +1,7 @@
 [bits 32]
 	global io_hlt,io_cli,io_sti,io_stihlt,io_in8,io_in16,io_in32
 	global io_out8,io_out16,io_out32,io_load_eflags,io_store_eflags
-	global load_gdtr,load_ldtr,load_cr0,store_cr0,memtest
+	global load_gdtr,load_idtr,load_cr0,store_cr0,memtest
 	global switchTask
 section .text
 
@@ -74,10 +74,10 @@ load_gdtr:
 	lgdt	[esp+6]
 	ret
 
-load_ldtr:
+load_idtr:
 	mov		ax,[esp+4]
 	mov		[esp+6],ax
-	lldt	[esp+6]
+	lidt	[esp+6]
 	ret
 
 load_cr0:

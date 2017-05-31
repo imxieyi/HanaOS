@@ -28,33 +28,33 @@
  */
 
 #include <stdint.h>
-#include "ldt.hpp"
+#include "idt.hpp"
 #include "asmfunc.hpp"
 #include "hanastd.hpp"
 #include <stddef.h>
 
-ldt_t       ldt;
-ldt_entry_t ldt_entries[0x100];
+idt_t       idt;
+idt_entry_t idt_entries[0x100];
 
 static void
 set_entry(uint8_t num, uint32_t base, uint16_t sel, uint8_t flags)
 {
-    ldt_entries[num].base_low  = (base & 0xffff);
-    ldt_entries[num].base_high = ((uint16_t)(base >> 16) & 0xffff);
-    ldt_entries[num].selector  = sel;
-    ldt_entries[num].reserved  = 0;
-    ldt_entries[num].flags     = flags;  // flags | 0x60 for user-mode
+    idt_entries[num].base_low  = (base & 0xffff);
+    idt_entries[num].base_high = ((uint16_t)(base >> 16) & 0xffff);
+    idt_entries[num].selector  = sel;
+    idt_entries[num].reserved  = 0;
+    idt_entries[num].flags     = flags;  // flags | 0x60 for user-mode
 }
 
 void
-ldt_init(void)
+idt_init(void)
 {
-   uint32_t size = sizeof (ldt_entry_t) * 256;
+   uint32_t size = sizeof (idt_entry_t) * 256;
 
-    ldt.limit = (uint16_t)((uint16_t)size - 1);
-    ldt.base  = (uint32_t)(size_t)&ldt_entries;
+    idt.limit = (uint16_t)((uint16_t)size - 1);
+    idt.base  = (uint32_t)(size_t)&idt_entries;
 
-    hanastd::memset(&ldt_entries, 0, size);
+    hanastd::memset(&idt_entries, 0, size);
 
     /*
      * remap IRQs
@@ -128,7 +128,7 @@ ldt_init(void)
     set_entry(46, (uint32_t)(size_t)irq14, 0x08, 0x8e);
     set_entry(47, (uint32_t)(size_t)irq15, 0x08, 0x8e);
 
-    ldt_flush((uint32_t)(size_t)&ldt);
+    idt_flush((uint32_t)(size_t)&idt);
 
 //    __asm__ volatile ("sti");
 }
