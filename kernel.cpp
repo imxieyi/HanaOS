@@ -6,7 +6,6 @@
 #include "gdt.hpp"
 #include "idt.hpp"
 #include "isr.hpp"
-#include "paging.hpp"
 #include "heap.hpp"
 #include "sheet.hpp"
 #include "inputdevices.hpp"
@@ -126,7 +125,6 @@ extern "C" void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 	gdt_init();
 	idt_init();
 	init_pit();
-//	paging_init();
 	
 	//Mouse cursor init
 	int mx=shtctl->xsize/2;

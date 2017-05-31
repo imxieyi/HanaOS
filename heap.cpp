@@ -1,14 +1,14 @@
 #include <stddef.h>
-#include <stdint.h>
-#include "paging.hpp"
+// #include <stdint.h>
 #include "heap.hpp"
 #include "asmfunc.hpp"
 
 /* a simple pointer-arithmetic-based malloc */
-
+#define PAGE_MASK 0xFFFFF000
+#define PAGE_SIZE     0x1000
 /* a symbol put there by the linker */
 extern char link_mem_end;
-uint32_t kmalloc_addr = (uint32_t)&link_mem_end;
+uint32_t kmalloc_addr = (uintptr_t)&link_mem_end;
 
 static void *kmalloc_int(size_t sz, int align, void **phys)
 {
