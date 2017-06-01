@@ -40,7 +40,7 @@ int FIFO::put(int data){
 	w=(w+1)%size;
 	free--;
 	if(task!=0)
-		if(task->stat!=RUNNING)
+		if(task->stat==SLEEPING)
 			task_run(task,-1,0);
 	return 0;
 }

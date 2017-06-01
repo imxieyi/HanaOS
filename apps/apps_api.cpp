@@ -1,6 +1,7 @@
 #include "hanastd.hpp"
 #include "apps_api.hpp"
 #include "graphics.hpp"
+#include "task.hpp"
 #include "dwm.hpp"
 using namespace hanastd;
 
@@ -38,7 +39,7 @@ SHEET *init_window(int width, int height, char *title){
 	auto sht=shtctl->allocsheet(width,height);
 	sht->graphics->init_window(title);
 	sht->slide((shtctl->xsize-width)/2,(shtctl->ysize-height)/2);
-	dwm_addtop(sht);
+	dwm_addtop(sht,task_now());
 	return sht;
 }
 

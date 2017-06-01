@@ -7,6 +7,7 @@
 #include "fifo.hpp"
 #include "apps.hpp"
 #include "apps_api.hpp"
+#include "dwm.hpp"
 using namespace hanastd;
 
 void task_window(void *arg) {

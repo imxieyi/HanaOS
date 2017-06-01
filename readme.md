@@ -22,6 +22,8 @@ bgimg.hpp就是张图片而已，编译完成后要占2M的空间，应该会被
 
 5-25:OSASK的多任务实现方式在kernel中无法使用，所以多任务代码基本上参考[OSDev的教程](http://wiki.osdev.org/Kernel_Multitasking)，同时加入了删除任务的API。
 
+书上18天之后就把书扔了，后面的功能完全从头实现。
+
 Apps列表：
  - free（内存信息）
  - hello（卖萌）

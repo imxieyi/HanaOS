@@ -3,6 +3,7 @@
 #include "sheet.hpp"
 #include "dwm.hpp"
 #include "heap.hpp"
+#include "task.hpp"
 
 Window *top=NULL;
 extern MEMMAN *memman;
@@ -11,15 +12,17 @@ extern SHEET *mouse_sht;
 void dwm_init(SHEET *sht){
 	top=(Window*)memman->alloc(sizeof(Window));
 	top->sheet=sht;
+	top->task=NULL;
 	top->prev=NULL;
 	top->next=NULL;
 }
 
-void dwm_addtop(SHEET *sht){
+void dwm_addtop(SHEET *sht, Task *task){
 	auto w=(Window*)memman->alloc(sizeof(Window));
 	w->prev=NULL;
 	w->next=top;
 	w->sheet=sht;
+	w->task=task;
 	if(top!=NULL)top->prev=w;
 	top=w;
 	mouse_sht->updown(mouse_sht->height+1);
@@ -71,6 +74,12 @@ void dwm_mousepressed(int x, int y){
 	int w=top->sheet->bxsize;
 	int h=top->sheet->bysize;
 	if(x>=x0&&y>=y0&&x<=x0+w&&y<=y0+h){
+		if(x>=x0+w-20&&x<=x0+w-7&&y>=y0+6&&y<=y0+19&&top->task!=NULL){//Close window
+			auto task=top->task;
+			dwm_removewindow(top->sheet);
+			killTask(task);
+			return;
+		}
 		if(y<=y0+24)
 			ontitlebar=true;
 		return;

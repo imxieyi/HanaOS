@@ -1,11 +1,14 @@
 #pragma once
 
+#include "task.hpp"
+
 typedef struct Window {
 	SHEET *sheet;
+	Task *task;
 	struct Window *prev, *next;
 } Window;
 
-void dwm_addtop(SHEET *sht);
+void dwm_addtop(SHEET *sht, Task *task);
 void dwm_movetop(Window *w);
 void dwm_init(SHEET *sht);
 void dwm_refresh(Window *old,Window *neww);

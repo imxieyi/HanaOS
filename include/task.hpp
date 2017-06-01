@@ -10,8 +10,9 @@ typedef struct {
 enum TASKSTATUS{EMPTY,RUNNING,SLEEPING};
 typedef struct Task {
 	Registers regs;
-	TASKSTATUS stat=RUNNING;
+	TASKSTATUS stat=EMPTY;
 	int level,priority;
+	uint32_t stackbottom;
 	FIFO *fifo;
 } __attribute__((packed)) Task;
 
@@ -41,5 +42,6 @@ Task *createTask(void (*main)(void*),void *arg);
 void task_run(Task *task,int level,int priority);
 void exitTask();
 void sleepTask();
+void killTask(Task *task);
 Task *initTasking(TIMER *timer);
 void preempt();
