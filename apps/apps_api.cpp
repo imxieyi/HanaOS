@@ -1,5 +1,7 @@
 #include "hanastd.hpp"
 #include "apps_api.hpp"
+#include "graphics.hpp"
+#include "dwm.hpp"
 using namespace hanastd;
 
 STDOUT::STDOUT(char *buffer, uint32_t *cbuffer){
@@ -30,3 +32,16 @@ void STDOUT::append(char* str, uint32_t color){
 	buffer[offset]=0;
 }
 
+extern SHEETCTRL *shtctl;
+
+SHEET *init_window(int width, int height, char *title){
+	auto sht=shtctl->allocsheet(width,height);
+	sht->graphics->init_window(title);
+	sht->slide((shtctl->xsize-width)/2,(shtctl->ysize-height)/2);
+	dwm_addtop(sht);
+	return sht;
+}
+
+void close_window(SHEET *sht){
+	dwm_removewindow(sht);
+}

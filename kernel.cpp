@@ -12,12 +12,14 @@
 #include "fifo.hpp"
 #include "timer.hpp"
 #include "task.hpp"
+#include "dwm.hpp"
 #include "appstore.hpp"
 #include "hanastd.hpp"
 using namespace hanastd;
 
 MEMMAN *memman;
-SHEET *sht_back,*sht_win;
+SHEETCTRL *shtctl;
+SHEET *sht_back,*mouse_sht;
 unsigned int memtotal;
 extern TIMERCTRL *timerctrl;
 extern uint32_t kmalloc_addr;
@@ -34,7 +36,7 @@ extern "C" void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 	memset((void*)kmalloc_addr,0,memman->total());
 
 	//Init Sheetctrl
-	auto shtctl=sheetctrl_init(memman,(vbe_mode_info_t*)hdr->vbe_mode_info);
+	shtctl=sheetctrl_init(memman,(vbe_mode_info_t*)hdr->vbe_mode_info);
 	
 	auto sht_bg=shtctl->allocsheet(shtctl->xsize,shtctl->ysize);
 	sht_bg->graphics->show_bgimg();
@@ -57,10 +59,10 @@ extern "C" void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 	//Mouse cursor init
 	int mx=shtctl->xsize/2;
 	int my=shtctl->ysize/2;
-	auto mouse_sht=shtctl->allocsheet(20,30);
+	mouse_sht=shtctl->allocsheet(20,30);
 	mouse_sht->graphics->init_mouse_cursor();
 	mouse_sht->slide(mx,my);
-	mouse_sht->updown(5);
+	mouse_sht->updown(3);
 	
 	//Console Window
 	auto con_sht=shtctl->allocsheet(640,480);
@@ -68,6 +70,7 @@ extern "C" void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 	con_sht->graphics->make_textbox(8,30,632,472,CONSOLE_BG,true);
 	con_sht->slide(50,50);
 	con_sht->updown(2);
+	dwm_init(con_sht);
 
 	//Multitasking
 	auto mt_timer=timerctrl->alloc();
@@ -93,6 +96,7 @@ extern "C" void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 	timer3->set(50);
 	io_sti();
 
+	bool mousepressed=false;
 	int i=0;
 	for(;;){
 		io_cli();
@@ -111,6 +115,19 @@ extern "C" void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 					mx=mx>shtctl->xsize-1?shtctl->xsize-1:mx;
 					my=my>shtctl->ysize-1?shtctl->ysize-1:my;
 					mouse_sht->slide(mx,my);
+					if(mdec.btn&0x01){
+						if(mousepressed){
+							dwm_mousedragged(mdec.x,mdec.y);
+						}else{
+							dwm_mousepressed(mx,my);
+							mousepressed=true;
+						}
+					}else{
+						if(mousepressed){
+							dwm_mousereleased();
+							mousepressed=false;
+						}
+					}
 				}
 			}else if(i>=256&&i<=511){
 				if(task_con->fifo!=NULL)

@@ -17,15 +17,16 @@ void appstore_init(){
 	publish_all();
 }
 
-void appstore_publish(const char *name, app_func_t entry){
+void appstore_publish(const char *name, app_func_t entry, bool newtask){
 	apps[app_count].entry=entry;
+	apps[app_count].newtask=newtask;
 	strncpy(name,apps[app_count].name,strlen(name));
 	app_count++;
 }
 
-app_func_t appstore_search(const char *name){
+App *appstore_search(const char *name){
 	for(int i=0;i<app_count;i++)
 		if(strncmp(name,apps[i].name,strlen(name)))
-			return apps[i].entry;
-	return 0;
+			return &apps[i];
+	return NULL;
 }

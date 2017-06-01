@@ -27,6 +27,7 @@ Apps列表：
  - hello（卖萌）
  - poweroff（关机）
  - reboot（重启）
+ - window（测试窗口&多任务）
 
 运行截图：
 

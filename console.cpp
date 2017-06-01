@@ -68,11 +68,14 @@ void task_console(void *arg){
 			push_char(ch,FONT_COLOR);
 			if(cmdlen>0){
 				cmdbuffer[cmdlen]=0;
-				app_func_t app_entry=appstore_search(cmdbuffer);
-				if(app_entry!=0){
-					app_entry(stdout,stdoutcolor,NULL);
-					for(int i=0;i<16*1024&&stdout[i]!=0;i++)
-						push_char(stdout[i],stdoutcolor[i]);
+				auto app=appstore_search(cmdbuffer);
+				if(app!=NULL){
+					memset(stdout,0,16*1024);
+					app->entry(stdout,stdoutcolor,NULL);
+					//if(!app->newtask){
+						for(int i=0;i<16*1024&&stdout[i]!=0;i++)
+							push_char(stdout[i],stdoutcolor[i]);
+					//}
 				} else {
 					sprintf(stdout,"App not found: ");
 					for(int i=0;i<16*1024&&stdout[i]!=0;i++)

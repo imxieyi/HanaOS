@@ -5,6 +5,8 @@
 #include "sheet.hpp"
 using namespace hanastd;
 
+extern MEMMAN *memman;
+
 //图层控制
 SHEETCTRL *sheetctrl_init(class MEMMAN *memman,vbe_mode_info_t *vbeinfo){
 	int i;
@@ -52,8 +54,14 @@ void SHEETCTRL::setmemman(class MEMMAN *memman){
 }
 
 void SHEET::updown(int height){
+	if(height==-1){
+		sctrl->sheets[this->height]=NULL;
+		this->height=-1;
+		sctrl->refreshall(vx0,vy0,vx0+bxsize-1,vy0+bysize-1);
+		return;
+	}
 	if(sctrl->top<height)sctrl->top=height;
-	if(this->height!=-1)
+	if(this->height!=-1&&sctrl->sheets[this->height]==this)
 		sctrl->sheets[this->height]=NULL;
 	this->height=height;
 	sctrl->sheets[height]=this;
@@ -159,8 +167,12 @@ void SHEET::refresh(int bx0,int by0,int bx1,int by1){
 }
 
 void SHEET::free(){
-	if(height>=0)
-		updown(-1);
+	sctrl->sheets[height]=NULL;
+	if(sctrl->top==height)
+		sctrl->top--;
+	refresh(0,0,bxsize,bysize);
 	flags=0;
+	memman->free_4k((uintptr_t)graphics->vram,bxsize*bysize*4);
+	memman->free_4k((uintptr_t)graphics,sizeof(GRAPHICS));
 	return;
 }

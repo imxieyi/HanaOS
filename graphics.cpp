@@ -70,13 +70,13 @@ void GRAPHICS::show_bgimg(){
 void GRAPHICS::draw_closebtn(){
 	for(int i=0;i<14;i++){
 		//Box
-		vram[(6+i)*width+(width-20)]=0;
-		vram[6*width+(width-20+i)]=0;
-		vram[(19-i)*width+(width-7)]=0;
-		vram[19*width+(width-20+i)]=0;
+		vram[(6+i)*width+(width-20)]=0xff000000;
+		vram[6*width+(width-20+i)]=0xff000000;
+		vram[(19-i)*width+(width-7)]=0xff000000;
+		vram[19*width+(width-20+i)]=0xff000000;
 		//X Symbol
-		vram[(6+i)*width+(width-20+i)]=0;
-		vram[(19-i)*width+(width-20+i)]=0;
+		vram[(6+i)*width+(width-20+i)]=0xff000000;
+		vram[(19-i)*width+(width-20+i)]=0xff000000;
 	}
 }
 

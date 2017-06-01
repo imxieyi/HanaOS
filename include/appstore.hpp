@@ -10,5 +10,5 @@ typedef struct {
 }App;
 
 void appstore_init();
-void appstore_publish(const char *name, app_func_t entry);
-app_func_t appstore_search(const char *name);
+void appstore_publish(const char *name, app_func_t entry, bool newtask);
+App *appstore_search(const char *name);

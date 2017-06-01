@@ -1,5 +1,7 @@
 #pragma once
 
+#include "multiboot.h"
+
 #define MAX_SHEETS		256
 #define SHEET_USE		1
 class SHEETCTRL;
