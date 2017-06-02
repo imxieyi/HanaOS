@@ -31,7 +31,10 @@ App列表：
  - reboot（重启）
  - tasklist（任务列表）
  - window（测试窗口）
+ - nyancat（没错就是彩虹猫）
 
 运行截图：
 
-![](imgs/screenshot.png)
+![](imgs/screenshot1.png)
+
+![](imgs/screenshot2.png)

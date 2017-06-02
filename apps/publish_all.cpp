@@ -10,4 +10,5 @@ void publish_all(){
 	appstore_publish("reboot",&app_reboot,false);
 	appstore_publish("window",&app_window,true);
 	appstore_publish("tasklist",&app_tasklist,false);
+	appstore_publish("nyancat",&app_nyancat,true);
 }

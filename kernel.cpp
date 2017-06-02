@@ -32,7 +32,7 @@ extern "C" void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 	memtotal=memtest(kmalloc_addr,0xbfffffff);
 	memman=(MEMMAN*)kmalloc_a(sizeof(MEMMAN));
 	memman->init();
-	memman->free(kmalloc_addr,memtotal-kmalloc_addr);
+	memman->free_4k(kmalloc_addr,memtotal-kmalloc_addr);
 	memset((void*)kmalloc_addr,0,memman->total());
 
 	//Init Sheetctrl
@@ -98,7 +98,6 @@ extern "C" void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 
 	bool mousepressed=false;
 	int i=0;
-	int a[100];
 	for(;;){
 		io_cli();
 		if(fifo->status()==0){

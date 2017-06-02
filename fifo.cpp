@@ -27,7 +27,7 @@ void FIFO::init(MEMMAN *memman,int size,Task *task){
 }
 
 void FIFO::remove(){
-	memman->free((uintptr_t)buf,size*4);
+	memman->free_4k((uintptr_t)buf,size*4);
 	return;
 }
 

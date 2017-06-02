@@ -63,7 +63,7 @@ void dwm_removewindow(SHEET *sht){
 			i->next->prev=i->prev;
 	}
 	mouse_sht->updown(mouse_sht->height-1);
-	memman->free((uintptr_t)i,sizeof(Window));
+	memman->free_4k((uintptr_t)i,sizeof(Window));
 }
 
 bool ontitlebar=false;

@@ -26,7 +26,7 @@ void *app_tasklist(char *buffer, uint32_t *cbuffer, char *param) {
 			if(i==0){
 				extern void *kernel_stack_bottom, *kernel_stack_top;
 				int kernel_stack_size=&kernel_stack_top-&kernel_stack_bottom;
-				int kernel_stack_used=(int)&kernel_stack_top-task->regs.esp;
+				int kernel_stack_used=(uintptr_t)&kernel_stack_top-task->regs.esp;
 				out.printf(0x97fffb,"    %2d.%03d%%",kernel_stack_used*100/kernel_stack_size,
 						(kernel_stack_used*100000/kernel_stack_size)%1000);
 			}else{
