@@ -75,7 +75,7 @@ extern "C" void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 	//Multitasking
 	auto mt_timer=timerctrl->alloc();
 	auto taska=initTasking(mt_timer);
-	auto task_con=createTask(&task_console,con_sht);
+	auto task_con=createTask("console",&task_console,con_sht);
 	task_run(task_con,1,1);
 	
 	//Keyboard init
@@ -98,6 +98,7 @@ extern "C" void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 
 	bool mousepressed=false;
 	int i=0;
+	int a[100];
 	for(;;){
 		io_cli();
 		if(fifo->status()==0){

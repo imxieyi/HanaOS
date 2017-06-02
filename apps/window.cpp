@@ -22,6 +22,6 @@ void task_window(void *arg) {
 }
 
 void *app_window(char *buffer, uint32_t *cbuffer, char *param) {
-	auto task=createTask(&task_window,NULL);
-	task_run(task,1,1);
+	auto task=createTask("window",&task_window,NULL);
+	task_run(task,2,1);
 }

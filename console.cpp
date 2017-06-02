@@ -23,7 +23,7 @@ extern TIMERCTRL *timerctrl;
 void task_console(void *arg){
 	auto sht=(SHEET*)arg;
 	auto task=task_now();
-	auto fifo=(FIFO*)memman->alloc(sizeof(FIFO));
+	auto fifo=(FIFO*)memman->alloc_4k(sizeof(FIFO));
 	fifo->init(memman,128,task);
 	task->fifo=fifo;
 	auto timer=timerctrl->alloc()->init(fifo,1);

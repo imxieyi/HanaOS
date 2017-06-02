@@ -5,8 +5,6 @@
 #include "hanastd.hpp"
 using namespace hanastd;
 
-#define TASK_STACK_SIZE 64*1024
-
 TASKCTRL *taskctl;
 TIMER *mt_timer;
 
@@ -76,6 +74,7 @@ Task *initTasking(TIMER *timer){
 	for(int i=0;i<MAX_TASKS;i++)
 		taskctl->tasks0[i].stat=EMPTY;
 	auto task=taskctl->alloc();
+	strncpy("kernel",task->name,6);
 	task->stat=RUNNING;
 	task->priority=2;
 	task->level=0;
@@ -85,7 +84,7 @@ Task *initTasking(TIMER *timer){
 	asm volatile("pushfl; movl (%%esp), %%eax; movl %%eax, %0; popfl;":"=m"(task->regs.eflags)::"%eax");
 
 	//Idle task
-	auto idle=createTask(&task_idle,NULL);
+	auto idle=createTask("idle",&task_idle,NULL);
 	task_run(idle,MAX_TASKLEVELS-1,1);
 	
 	//Timer
@@ -146,8 +145,9 @@ void mt_taskswitch(){
 		switchTask(&nowtask->regs,&newtask->regs);
 }
 
-Task *createTask(void (*main)(void*),void *arg){
+Task *createTask(const char *name,void (*main)(void*),void *arg){
 	auto task=taskctl->alloc();
+	strncpy(name,task->name,strlen(name));
 	task->regs.eip=(uintptr_t)main;
 	*((uint32_t*)(task->regs.esp+4))=(uintptr_t)arg;
 	return task;

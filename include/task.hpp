@@ -3,6 +3,8 @@
 #include <stdint.h>
 #include "timer.hpp"
 
+#define TASK_STACK_SIZE (64*1024)
+
 typedef struct {
 	uint32_t eax,ebx,ecx,edx,esi,edi,esp,ebp,eip,eflags,cr3;
 } __attribute__((packed)) Registers;
@@ -10,6 +12,7 @@ typedef struct {
 enum TASKSTATUS{EMPTY,RUNNING,SLEEPING};
 typedef struct Task {
 	Registers regs;
+	char name[16];
 	TASKSTATUS stat=EMPTY;
 	int level,priority;
 	uint32_t stackbottom;
@@ -38,7 +41,7 @@ public:
 extern "C" void switchTask(Registers *from, Registers *to);
 extern "C" void mt_taskswitch();
 Task *task_now();
-Task *createTask(void (*main)(void*),void *arg);
+Task *createTask(const char *name,void (*main)(void*),void *arg);
 void task_run(Task *task,int level,int priority);
 void exitTask();
 void sleepTask();

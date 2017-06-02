@@ -6,7 +6,7 @@ void FIFO::init(MEMMAN *memman,int size){
 	this->size=size;
 	this->memman=memman;
 	this->task=0;
-	buf=(int *)memman->alloc(size*sizeof(int));
+	buf=(int *)memman->alloc_4k(size*sizeof(int));
 	free=size;
 	flags=0;
 	w=0;
@@ -18,7 +18,7 @@ void FIFO::init(MEMMAN *memman,int size,Task *task){
 	this->size=size;
 	this->memman=memman;
 	this->task=task;
-	buf=(int *)memman->alloc(size*sizeof(int));
+	buf=(int *)memman->alloc_4k(size*sizeof(int));
 	free=size;
 	flags=0;
 	w=0;

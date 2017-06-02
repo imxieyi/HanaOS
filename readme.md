@@ -24,12 +24,13 @@ bgimg.hpp就是张图片而已，编译完成后要占2M的空间，应该会被
 
 书上18天之后就把书扔了，后面的功能完全从头实现。
 
-Apps列表：
+App列表：
  - free（内存信息）
  - hello（卖萌）
  - poweroff（关机）
  - reboot（重启）
- - window（测试窗口&多任务）
+ - tasklist（任务列表）
+ - window（测试窗口）
 
 运行截图：
 

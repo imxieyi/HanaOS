@@ -10,7 +10,7 @@ extern MEMMAN *memman;
 extern SHEET *mouse_sht;
 
 void dwm_init(SHEET *sht){
-	top=(Window*)memman->alloc(sizeof(Window));
+	top=(Window*)memman->alloc_4k(sizeof(Window));
 	top->sheet=sht;
 	top->task=NULL;
 	top->prev=NULL;
@@ -18,7 +18,7 @@ void dwm_init(SHEET *sht){
 }
 
 void dwm_addtop(SHEET *sht, Task *task){
-	auto w=(Window*)memman->alloc(sizeof(Window));
+	auto w=(Window*)memman->alloc_4k(sizeof(Window));
 	w->prev=NULL;
 	w->next=top;
 	w->sheet=sht;

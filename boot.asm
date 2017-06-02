@@ -1,5 +1,6 @@
 global start, KERNEL_VMA_OFFSET, KERNEl_PMA_OFFSET
 extern kernel_main
+global kernel_stack_bottom,kernel_stack_top
 
 MODULEALIGN equ 1<<0
 MEMINFO     equ 1<<1
