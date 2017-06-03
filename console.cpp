@@ -7,6 +7,7 @@
 #include "fifo.hpp"
 #include "heap.hpp"
 #include "timer.hpp"
+#include "rtc.hpp"
 #include "inputdevices.hpp"
 #include "graphics.hpp"
 #include "sheet.hpp"
@@ -97,6 +98,20 @@ void task_console(void *arg){
 			push_char(ch,FONT_COLOR);
 		}
 	};
+
+	//Wait for RTC
+	extern bool timeset;
+	while(!timeset)io_hlt();
+	
+	//Welcome message
+	auto time=rtc_time();
+	time2str(&time,cmdbuffer);
+	sprintf(stdout,"%s",cmdbuffer);
+	sht->putstring(cursor_x,cursor_y,1,0xd3b1ff,CONSOLE_BG,true,stdout);
+	cursor_y+=16;
+	sprintf(cmdbuffer,"Welcome to HanaOS!");
+	sht->putstring(cursor_x,cursor_y,1,0xb1e5ff,CONSOLE_BG,true,cmdbuffer);
+	cursor_y+=16;
 
 	sht->putstring(cursor_x,cursor_y,1,0x74ff84,CONSOLE_BG,true,"$");
 	cursor_x+=16;

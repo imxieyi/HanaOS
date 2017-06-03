@@ -9,6 +9,7 @@
 #include "heap.hpp"
 #include "sheet.hpp"
 #include "inputdevices.hpp"
+#include "rtc.hpp"
 #include "fifo.hpp"
 #include "timer.hpp"
 #include "task.hpp"
@@ -56,6 +57,9 @@ extern "C" void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 	idt_init();
 	init_pit();
 	
+	//RTC
+	init_rtc();
+	
 	//Mouse cursor init
 	int mx=shtctl->xsize/2;
 	int my=shtctl->ysize/2;
@@ -91,9 +95,7 @@ extern "C" void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 	
 	//AppStore
 	appstore_init();
-	
-	auto timer3=timerctrl->alloc()->init(fifo,1);
-	timer3->set(50);
+
 	io_sti();
 
 	bool mousepressed=false;

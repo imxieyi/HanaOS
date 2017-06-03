@@ -6,6 +6,8 @@
 
 必须用32位MBR的grub2生成镜像，否则无法获得正确的显存地址（这个坑就不要去踩了，无解），轻则切换分辨率后无显示，重则导致虚拟机崩溃。
 
+**如果在VMware中运行，请在.vmx文件中加入rtc.diffFromUTC = 0，否则时间会有偏移。**
+
 依赖工具：nasm, g++, g++-multilib, make, xorriso, mtools, qemu
 
 ~~推荐环境：MBR引导启动的32位Ubuntu~~
@@ -35,6 +37,7 @@ App列表：
  - crash1（跳转0x0异常）
  - crash2（除以0）
  - crash3（跳转0xffffffff异常）
+ - time（输出当前时间）
 
 运行截图：
 
