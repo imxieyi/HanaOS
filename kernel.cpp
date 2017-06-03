@@ -70,10 +70,6 @@ extern "C" void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 	
 	//Console Window
 	auto con_sht=shtctl->allocsheet(640,480);
-	con_sht->graphics->init_window("Console");
-	con_sht->graphics->make_textbox(8,30,632,472,CONSOLE_BG,true);
-	con_sht->slide(50,50);
-	con_sht->updown(2);
 	dwm_init(con_sht);
 
 	//Multitasking

@@ -7,7 +7,7 @@ BUILD	= build
 ISODIR	= isodir
 KERNEL	= $(BUILD)/kernel
 ISOFILE	= $(BUILD)/hanaos.iso
-CXXFLAGS= -ffreestanding -fno-exceptions -fno-rtti -m32 -fpermissive -Wwrite-strings -Iinclude -w
+CXXFLAGS= -ffreestanding -fno-exceptions -fno-rtti -m32 -fpermissive -Wwrite-strings -Iinclude -w -std=gnu++14
 LDFLAGS	= -m elf_i386 -N
 CXXSRC	= $(wildcard *.cpp)
 ASMSRC	= $(wildcard *.asm)

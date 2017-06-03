@@ -18,11 +18,15 @@ using namespace hanastd;
 extern MEMMAN *memman;
 extern TIMERCTRL *timerctrl;
 
-#define CONSOLE_BG 0xaa000000
+#define CONSOLE_BG 0xaa2c3a44
 #define FONT_COLOR 0x74e3ff
 #define ERROR_COLOR 0xffafaf
 void task_console(void *arg){
 	auto sht=(SHEET*)arg;
+	sht->graphics->init_window("Console");
+	sht->graphics->make_textbox(8,30,632,472,CONSOLE_BG,true);
+	sht->slide(50,50);
+	sht->updown(2);
 	auto task=task_now();
 	auto fifo=(FIFO*)memman->alloc_4k(sizeof(FIFO));
 	fifo->init(memman,128,task);
@@ -126,13 +130,13 @@ void task_console(void *arg){
 			if(i<=1){
 				if(i!=0){
 					timer->setdata(0);
-					cursor_c=0xffffff;
+					cursor_c=0xffffffff;
 				}else{
 					timer->setdata(1);
-					cursor_c=0x000000;
+					cursor_c=CONSOLE_BG;
 				}
 				timer->set(50);
-				sht->graphics->setcolor(cursor_c);
+				sht->graphics->setcolor(cursor_c,true);
 				sht->graphics->boxfill(cursor_x,cursor_y,cursor_x+7,cursor_y+15);
 				sht->refresh(cursor_x,cursor_y,cursor_x+7,cursor_y+15);
 			}else if(i>=256&&i<=511){

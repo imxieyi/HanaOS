@@ -12,3 +12,4 @@ void *app_crash1(char *buffer, uint32_t *cbuffer, char *param);
 void *app_crash2(char *buffer, uint32_t *cbuffer, char *param);
 void *app_crash3(char *buffer, uint32_t *cbuffer, char *param);
 void *app_time(char *buffer, uint32_t *cbuffer, char *param);
+void *app_help(char *buffer, uint32_t *cbuffer, char *param);

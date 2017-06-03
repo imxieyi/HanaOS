@@ -38,6 +38,7 @@ App列表：
  - crash2（除以0）
  - crash3（跳转0xffffffff异常）
  - time（输出当前时间）
+ - help（输出App列表）
 
 运行截图：
 
@@ -48,3 +49,5 @@ App列表：
 ![](imgs/screenshot3.png)
 
 ![](imgs/screenshot4.png)
+
+![](imgs/screenshot5.png)

@@ -15,4 +15,5 @@ void publish_all(){
 	appstore_publish("crash2",&app_crash2,false);
 	appstore_publish("crash3",&app_crash3,false);
 	appstore_publish("time",&app_time,false);
+	appstore_publish("help",&app_help,false);
 }

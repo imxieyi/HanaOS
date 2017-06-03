@@ -2,7 +2,7 @@ SHELL	= bash
 CXX	= g++
 LD	= ld
 BUILD	= ../build
-CXXFLAGS= -ffreestanding -fno-exceptions -fno-rtti -m32 -fpermissive -Wwrite-strings -I../include -w
+CXXFLAGS= -ffreestanding -fno-exceptions -fno-rtti -m32 -fpermissive -Wwrite-strings -I../include -w -std=gnu++14
 CXXSRC	= $(wildcard *.cpp)
 CXXOBJ	= $(addprefix $(BUILD)/,$(notdir $(CXXSRC:.cpp=.o)))
 DEPS	= $(addprefix $(BUILD)/,$(notdir $(CXXSRC:.cpp=.d)))
