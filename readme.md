@@ -32,9 +32,14 @@ App列表：
  - tasklist（任务列表）
  - window（测试窗口）
  - nyancat（没错就是彩虹猫）
+ - crash1（跳转0x0异常）
+ - crash2（除以0）
+ - crash3（跳转0xffffffff异常）
 
 运行截图：
 
 ![](imgs/screenshot1.png)
 
 ![](imgs/screenshot2.png)
+
+![](imgs/screenshot3.png)
