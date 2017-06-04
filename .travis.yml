@@ -1,33 +1,35 @@
+dist: trusty
+sudo: required
 matrix:
   include:
-    # works on Precise and Trusty
-    - os: linux
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-6
-      env:
-        - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6"
-
+  - os: linux
+    addons:
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        packages:
+        - g++-6
+    env:
+    - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6"
 before_install:
-  - sudo apt-get update
-
+- sudo apt-get update
 install:
-  - sudo apt-get -y install g++-6 g++-6-multilib nasm make xorriso mtools grub-pc grub-common
-
-# Enable C++ support
+- sudo apt-get -y install g++-6 g++-6-multilib nasm make xorriso mtools grub-pc grub-common
 language: cpp
-
-# Compiler selection
 compiler:
-  - g++
-
-# Build steps
+- g++
 script:
-  - make kernel
-  - cp build/kernel isodir/boot/
-  - strip isodir/boot/kernel
-  - grub-mkrescue --output=build/hanaos.iso isodir
-  - file build/hanaos.iso
+- make kernel
+- cp build/kernel isodir/boot/
+- strip isodir/boot/kernel
+- grub-mkrescue --version
+- grub-mkrescue --output=build/hanaos.iso isodir
+- file build/hanaos.iso
+
+deploy:
+  provider: releases
+  api_key:
+    secure: f05GEek92Cv5Ohu7+JC2HlG2izk6QJuHABBNctmOrB1dqMrgBAnK9QG1MWzE5/ZcLaNUkU/VB2Rod86I7Y7xMhu0J6LbFFw/4r8dJN+eVxhVqnbGZp0Wrn9gS8yPxt1nyhcFRyYSDqJms/iMT/GRDctQQE+dOx9AoK3ESaODVE2jhZNvLbi2ahS2z56R73exCIJbPIR/KSp/3bHeS4DH3ZZ8/aH6H312JmM69u0ZLvInEuEofbzUaZr2O8OTCpOnhhTbfWPA1L8vnpfMHOgJmtVvwVW67CqK2kR0afe7DLACbj+mdxEXewrVdUYsmAfKFFl+gZzfWlcQ34g59QIrSt1pzDkCAyP8aJ6uBb8Y1ceVBlqhiciRmCBZg7oHXa422LCH8GvD+lptcQ5/DLkpjeA7BCvauqPc9nwQxYQK4Qy1PyLVIqvvXepHUL8HA3TqqaG7qn/5J+kD2YWSjBhURuvw2IN442SmvLeYlXMxzTgezaHRxvcoTWf28IMD2YJ7Bx2+iiHudUPY3yhVAWrRpCTkYwRjslpll6msH6w/0LqukKSSEw6mbjGml7Q3PZ/v5gsYsVv1bJZHHryWpMVM2iNT/72Dv8Gsf6TFQ9I16Y53INXd/36vawgArAt/FsGZhPjbQAkLzQTw2Vv0+vmynC5TcDCdHW82lpiTh44JFoY=
+  file: build/hanaos.iso
+  on:
+    repo: imxieyi/os_project_kernel

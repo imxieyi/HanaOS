@@ -1,6 +1,6 @@
 # 操作系统(CS302) Project —— kernel
 
-[![Build Status](https://travis-ci.org/imxieyi/os_project_kernel.svg?branch=master)](https://travis-ci.org/imxieyi/os_project_kernel)
+嗯。装逼狗牌：[![Build Status](https://travis-ci.org/imxieyi/os_project_kernel.svg?branch=master)](https://travis-ci.org/imxieyi/os_project_kernel)
 
 生命不息，挖坑不止。
 
@@ -10,7 +10,7 @@
 
 **如果在VMware中运行，请在.vmx文件中加入rtc.diffFromUTC = 0，否则时间会有偏移。**
 
-依赖工具：nasm, g++-6, g++-6-multilib, make, xorriso, mtools, qemu, grub-common
+**依赖工具：** nasm, g++-6, g++-6-multilib, make, xorriso, mtools, qemu, grub-common
 
 在64位或EFI引导的系统上需要安装grub-pc才能生成iso镜像。
 
