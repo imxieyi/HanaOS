@@ -1,0 +1,33 @@
+matrix:
+  include:
+    # works on Precise and Trusty
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-6
+      env:
+        - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6"
+
+before_install:
+  - sudo apt-get update
+
+install:
+  - sudo apt-get -y install g++-6 g++-6-multilib nasm make xorriso mtools grub-pc grub-common
+
+# Enable C++ support
+language: cpp
+
+# Compiler selection
+compiler:
+  - g++
+
+# Build steps
+script:
+  - make kernel
+  - cp build/kernel isodir/boot/
+  - strip isodir/boot/kernel
+  - grub-mkrescue --output=build/hanaos.iso isodir
+  - file build/hanaos.iso

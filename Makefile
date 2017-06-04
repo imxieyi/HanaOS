@@ -1,5 +1,5 @@
 SHELL	= bash
-CXX	= g++
+CXX	= g++-6
 LD	= ld
 NASM	= nasm
 QEMU	= qemu-system-i386
@@ -7,7 +7,7 @@ BUILD	= build
 ISODIR	= isodir
 KERNEL	= $(BUILD)/kernel
 ISOFILE	= $(BUILD)/hanaos.iso
-CXXFLAGS= -ffreestanding -fno-exceptions -fno-rtti -m32 -fpermissive -Wwrite-strings -Iinclude -w -std=gnu++14
+CXXFLAGS= -ffreestanding -fno-exceptions -fno-rtti -m32 -fpermissive -Wwrite-strings -Iinclude -w -std=c++14
 LDFLAGS	= -m elf_i386 -N
 CXXSRC	= $(wildcard *.cpp)
 ASMSRC	= $(wildcard *.asm)
@@ -21,6 +21,9 @@ define colorecho
 endef
 
 default: iso
+
+.PHONY: kernel
+kernel: $(KERNEL) | $(BUILD)
 
 .PHONY: $(BUILD)
 $(BUILD):
@@ -43,19 +46,19 @@ $(BUILD)/%.o: %.cpp
 	@$(CXX) -c $*.cpp -o $(BUILD)/$*.o $(CXXFLAGS)
 
 $(BUILD)/apps.o: $(APPS) apps/Makefile
-	make -C apps
+	@make -C apps
 
 $(KERNEL): $(ASMOBJ) $(CXXOBJ) $(BUILD)/apps.o
 	$(call colorecho,Link kernel...)
 	@$(LD) $(ASMOBJ) $(CXXOBJ) $(BUILD)/apps.o -T link.ld -o $(KERNEL) $(LDFLAGS)
 
-$(ISOFILE): $(KERNEL)
+$(ISOFILE): kernel
 	$(call colorecho,Generate iso image...)
 	@cp $(KERNEL) $(ISODIR)/boot/
 	@strip $(ISODIR)/boot/kernel
-	@grub-mkrescue -d /usr/lib/grub/i386-pc -o $(ISOFILE) $(ISODIR)
+	@grub-mkrescue --directory=/usr/lib/grub/i386-pc --output=$(ISOFILE) $(ISODIR)
 
-iso: $(ISOFILE) | $(BUILD)
+iso: $(ISOFILE)
 
 run: iso
 	$(QEMU) -m 32 -vga std -cdrom $(ISOFILE)
