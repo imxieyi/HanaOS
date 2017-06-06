@@ -62,18 +62,7 @@ void task_binaryclock(void *arg) {
         }
     };
     refresh();
-    auto task=task_now();
-    auto fifo=(FIFO*)memman->alloc_4k(sizeof(FIFO));
-    fifo->init(memman,128,task);
-    task->fifo=fifo;
-    auto timer=timerctrl->alloc()->init(fifo,1);
-    timer->set(FRAME_INTERVAL);
-    int i = 0;
-    for(;;){
-        if(!fifo->status()){
-            sleepTask();
-        }else{
-            fifo->get();
+	auto loop=[&]{
             auto time=rtc_time();
             int timedigits[6]={time.hour/10,time.hour %10,time.minute/10,time.minute%10,time.second/10,time.second%10};
             // first digit
@@ -86,10 +75,8 @@ void task_binaryclock(void *arg) {
             updatedata(0,timedigits[4],4);
             updatedata(-1,timedigits[5],5);
             refresh();
-               
-            timer->set(FRAME_INTERVAL);
-        }
-    }
+	};
+	api_loopforever(loop,FRAME_INTERVAL);
 }
 
 void *app_binaryclock(char *buffer, uint32_t *cbuffer, char *param) {
