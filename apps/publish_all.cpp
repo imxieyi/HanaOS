@@ -16,4 +16,5 @@ void publish_all(){
 	appstore_publish("crash3",&app_crash3,false);
 	appstore_publish("time",&app_time,false);
 	appstore_publish("help",&app_help,false);
+    appstore_publish("binaryclock",&app_binaryclock,false);
 }
