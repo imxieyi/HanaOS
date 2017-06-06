@@ -1,4 +1,4 @@
-# 操作系统(CS302) Project —— kernel
+# 操作系统 (CS302) Project —— kernel
 
 嗯。装逼狗牌：[![Build Status](https://travis-ci.org/imxieyi/os_project_kernel.svg?branch=master)](https://travis-ci.org/imxieyi/os_project_kernel)
 
@@ -39,6 +39,7 @@ App列表：
  - crash3（跳转0xffffffff异常）
  - time（输出当前时间）
  - help（输出App列表）
+ - binaryclock
 
 运行截图：
 
