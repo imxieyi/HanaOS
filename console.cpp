@@ -15,9 +15,6 @@
 #include "hanastd.hpp"
 using namespace hanastd;
 
-extern MEMMAN *memman;
-extern TIMERCTRL *timerctrl;
-
 #define CONSOLE_BG 0xaa2c3a44
 #define FONT_COLOR 0x74e3ff
 #define ERROR_COLOR 0xffafaf
@@ -28,10 +25,10 @@ void task_console(void *arg){
 	sht->slide(50,50);
 	sht->updown(2);
 	auto task=task_now();
-	auto fifo=(FIFO*)memman->alloc_4k(sizeof(FIFO));
-	fifo->init(memman,128,task);
+	auto fifo=(FIFO*)malloc(sizeof(FIFO));
+	fifo->init(128,task);
 	task->fifo=fifo;
-	auto timer=timerctrl->alloc()->init(fifo,1);
+	auto timer=timer_alloc()->init(fifo,1);
 	timer->set(50);
 	uint32_t cursor_c=0x000000;
 	int columns=(sht->graphics->width-16)/8;
@@ -65,8 +62,8 @@ void task_console(void *arg){
 		}
 	};
 
-	auto stdout=(char*)memman->alloc_4k(16*1024);
-	auto stdoutcolor=(uint32_t*)memman->alloc_4k(64*1024);
+	auto stdout=(char*)malloc(16*1024);
+	auto stdoutcolor=(uint32_t*)malloc(64*1024);
 
 	auto push_char_keyboard = [&](char ch) {
 		if(ch=='\n'){

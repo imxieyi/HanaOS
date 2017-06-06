@@ -18,9 +18,6 @@ using namespace hanastd;
 #define TOP_EDGE 32
 #define FRAME_INTERVAL 10
 
-extern MEMMAN *memman;
-extern TIMERCTRL *timerctrl;
-
 const uint32_t nyan_platte[8]={
 	0,0xff000000,0xffffcc99,0xffff99ff,0xffff3399,0xff999999,0xffffffff,0xffff9999
 };
@@ -308,26 +305,15 @@ void task_nyancat(void *arg) {
 	for(char y=0;y<NYAN_HEIGHT;y++)
 		for(char x=0;x<NYAN_WIDTH;x++)
 			put_block(x,y);
-	auto task=task_now();
-	auto fifo=(FIFO*)memman->alloc_4k(sizeof(FIFO));
-	fifo->init(memman,128,task);
-	task->fifo=fifo;
-	auto timer=timerctrl->alloc()->init(fifo,1);
-	timer->set(FRAME_INTERVAL);
-	for(;;){
-		if(!fifo->status()){
-			sleepTask();
-		}else{
-			fifo->get();
-			frame=(frame+1)%12;
-			lastframe=(lastframe+1)%12;
-			for(char y=0;y<NYAN_HEIGHT;y++)
-				for(char x=0;x<NYAN_WIDTH;x++)
-					if(nyan_frames[frame][y*NYAN_WIDTH+x]!=nyan_frames[lastframe][y*NYAN_WIDTH+x])
-						put_block(x,y);
-			timer->set(FRAME_INTERVAL);
-		}
-	}
+	auto loop=[&]{
+		frame=(frame+1)%12;
+		lastframe=(lastframe+1)%12;
+		for(char y=0;y<NYAN_HEIGHT;y++)
+			for(char x=0;x<NYAN_WIDTH;x++)
+				if(nyan_frames[frame][y*NYAN_WIDTH+x]!=nyan_frames[lastframe][y*NYAN_WIDTH+x])
+					put_block(x,y);
+	};
+	api_loopforever(loop,FRAME_INTERVAL);
 }
 
 void *app_nyancat(char *buffer, uint32_t *cbuffer, char *param) {

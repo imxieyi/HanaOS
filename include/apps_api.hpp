@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 #include "sheet.hpp"
+#include "lambda_container.hpp"
 
 class STDOUT {
 private:
@@ -19,3 +20,5 @@ void close_window(SHEET *sht);
 
 int initAcpi(void);
 void acpiPowerOff(void);
+
+void api_loopforever(LambdaContainer func, int interval);

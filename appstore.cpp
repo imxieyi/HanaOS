@@ -8,12 +8,11 @@ using namespace hanastd;
 
 App *apps;
 int app_count=0;
-extern MEMMAN *memman;
 
 #define MAX_APPS 100
 
 void appstore_init(){
-	apps=(App*)memman->alloc_4k(MAX_APPS*sizeof(App));
+	apps=(App*)malloc(MAX_APPS*sizeof(App));
 	publish_all();
 }
 

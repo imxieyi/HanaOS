@@ -8,6 +8,7 @@
 TIMERCTRL *timerctrl;
 
 void init_pit(){
+	timerctrl=(TIMERCTRL*)malloc(sizeof(TIMERCTRL));
 	register_interrupt_handler(IRQ0,&timer_handler);
 	io_out8(PIT_CTRL,0x34);
 	io_out8(PIT_CNT0,0x9c);
@@ -15,7 +16,7 @@ void init_pit(){
 	timerctrl->count=0;
 	for(int i=0;i<MAX_TIMER;i++)
 		timerctrl->timer[i].flag=FREE;
-	auto t=timerctrl->alloc();
+	auto t=timer_alloc();
 	t->timeout=0xffffffff;
 	t->flag=USING;
 	t->next=NULL;
@@ -76,6 +77,10 @@ void TIMERCTRL::regist(TIMER *timer){
 		}
 	}
 	return;
+}
+
+TIMER *timer_alloc(){
+	return timerctrl->alloc();
 }
 
 TIMER *TIMERCTRL::alloc(){

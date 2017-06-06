@@ -1,6 +1,8 @@
 #include "hanastd.hpp"
 #include "apps_api.hpp"
 #include "graphics.hpp"
+#include "sheet.hpp"
+#include "heap.hpp"
 #include "task.hpp"
 #include "dwm.hpp"
 using namespace hanastd;
@@ -33,16 +35,32 @@ void STDOUT::append(char* str, uint32_t color){
 	buffer[offset]=0;
 }
 
-extern SHEETCTRL *shtctl;
-
 SHEET *init_window(int width, int height, char *title){
-	auto sht=shtctl->allocsheet(width,height);
+	auto sht=shtctl_alloc(width,height);
 	sht->graphics->init_window(title);
-	sht->slide((shtctl->xsize-width)/2,(shtctl->ysize-height)/2);
+	sht->slide((screen_width-width)/2,(screen_height-height)/2);
 	dwm_addtop(sht,task_now());
 	return sht;
 }
 
 void close_window(SHEET *sht){
 	dwm_removewindow(sht);
+}
+
+void api_loopforever(LambdaContainer func,int interval){
+	auto task=task_now();
+	auto fifo=(FIFO*)malloc(sizeof(FIFO));
+	fifo->init(128,task);
+	task->fifo=fifo;
+	auto timer=timer_alloc()->init(fifo,1);
+	timer->set(interval);
+	for(;;){
+		if(!fifo->status()){
+			sleepTask();
+		}else{
+			fifo->get();
+			func();
+			timer->set(interval);
+		}
+	}
 }

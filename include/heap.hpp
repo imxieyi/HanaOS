@@ -31,3 +31,6 @@ public:
 extern "C" int load_cr0(void);
 extern "C" void store_cr0(int cr0);
 extern "C" unsigned int memtest(unsigned int start,unsigned int end);
+void memman_init();
+uintptr_t malloc(uint32_t size);
+int mfree(uintptr_t addr,uint32_t size);

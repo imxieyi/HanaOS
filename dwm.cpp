@@ -6,11 +6,10 @@
 #include "task.hpp"
 
 Window *top=NULL;
-extern MEMMAN *memman;
 extern SHEET *mouse_sht;
 
 void dwm_init(SHEET *sht){
-	top=(Window*)memman->alloc_4k(sizeof(Window));
+	top=(Window*)malloc(sizeof(Window));
 	top->sheet=sht;
 	top->task=NULL;
 	top->prev=NULL;
@@ -18,7 +17,7 @@ void dwm_init(SHEET *sht){
 }
 
 void dwm_addtop(SHEET *sht, Task *task){
-	auto w=(Window*)memman->alloc_4k(sizeof(Window));
+	auto w=(Window*)malloc(sizeof(Window));
 	w->prev=NULL;
 	w->next=top;
 	w->sheet=sht;
@@ -63,7 +62,7 @@ void dwm_removewindow(SHEET *sht){
 			i->next->prev=i->prev;
 	}
 	mouse_sht->updown(mouse_sht->height-1);
-	memman->free_4k((uintptr_t)i,sizeof(Window));
+	mfree((uintptr_t)i,sizeof(Window));
 }
 
 bool ontitlebar=false;

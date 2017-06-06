@@ -78,7 +78,7 @@ static UCHAR *setdec(UCHAR *s, UINT ui)
 	return s;
 }
 
-int vsprintf(char *s, const char *format, va_list arg)
+int hanastd::vsprintf(char *s, const char *format, va_list arg)
 {
 	UCHAR c, *t = s, *p, flag_left, flag_zero /* , flag_sign, flag_space */;
 	UCHAR temp[32] /* ”Žšp */, *q;

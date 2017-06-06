@@ -14,10 +14,6 @@ using namespace hanastd;
 
 #define AUTOREBOOT_COUNTDOWN 15
 
-extern SHEETCTRL *shtctl;
-extern TIMERCTRL *timerctrl;
-extern MEMMAN *memman;
-
 //http://wiki.osdev.org/Exceptions
 const char exceptions[32][32]={
 	"Divide by Zero",
@@ -55,12 +51,13 @@ const char exceptions[32][32]={
 };
 
 void isr_handler(registers_t regs){
-	auto sht_panic=shtctl->allocsheet(shtctl->xsize,shtctl->ysize);
+	auto sht_panic=shtctl_alloc(screen_width,screen_height);
 	sht_panic->slide(0,0);
+	extern SHEETCTRL *shtctl;
 	sht_panic->updown(shtctl->top+1);
 	sht_panic->graphics->setcolor(BACKGROUND,true);
-	sht_panic->graphics->boxfill(0,0,shtctl->xsize,shtctl->ysize);
-	shtctl->refreshall(0,0,shtctl->xsize,shtctl->ysize);
+	sht_panic->graphics->boxfill(0,0,screen_width,screen_height);
+	shtctl_refresh(0,0,screen_width,screen_height);
 	char str[64];
 	int y=0;
 	sprintf(str,"Kernel Panic!");
@@ -113,9 +110,9 @@ void isr_handler(registers_t regs){
 	y+=16;
 	sprintf(str,"DS:     0x%08X",regs.ds);
 	sht_panic->putstring(0,y,1,FOREGROUND_DUMP,BACKGROUND,true,str);
-	auto fifo=(FIFO*)memman->alloc_4k(sizeof(FIFO));
-	fifo->init(memman,128,NULL);
-	auto timer=timerctrl->alloc()->init(fifo,1);
+	auto fifo=(FIFO*)malloc(sizeof(FIFO));
+	fifo->init(128,NULL);
+	auto timer=timer_alloc()->init(fifo,1);
 	timer->set(100);
 	int countdown=AUTOREBOOT_COUNTDOWN;
 	y+=32;

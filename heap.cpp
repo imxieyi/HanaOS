@@ -1,7 +1,11 @@
 #include <stddef.h>
-// #include <stdint.h>
+#include <stdint.h>
 #include "heap.hpp"
 #include "asmfunc.hpp"
+#include "hanastd.hpp"
+
+MEMMAN *memman;
+unsigned int memtotal;
 
 /* a simple pointer-arithmetic-based malloc */
 #define PAGE_MASK 0xFFFFF000
@@ -49,6 +53,15 @@ void *kmalloc_ap(size_t sz, void **phys)
 void kmalloc_set_addr(uint32_t addr)
 {
     kmalloc_addr = addr;
+}
+
+void memman_init(){
+	//Memory Test & MEMMAN init
+	memtotal=memtest(kmalloc_addr,0xbfffffff);
+	memman=(MEMMAN*)kmalloc_a(sizeof(MEMMAN));
+	memman->init();
+	mfree(kmalloc_addr,memtotal-kmalloc_addr);
+	hanastd::memset((void*)kmalloc_addr,0,memman->total());
 }
 
 void MEMMAN::init(){
@@ -133,3 +146,10 @@ int MEMMAN::free_4k(unsigned int addr,unsigned int size){
 	return this->free(addr,size);
 }
 
+uintptr_t malloc(uint32_t size){
+	return memman->alloc_4k(size);
+}
+
+int mfree(uintptr_t addr,uint32_t size){
+	return memman->free_4k(addr,size);
+}

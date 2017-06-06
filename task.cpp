@@ -8,8 +8,6 @@ using namespace hanastd;
 TASKCTRL *taskctl;
 TIMER *mt_timer;
 
-extern MEMMAN *memman;
-
 void task_idle(void *arg){
 	for(;;)io_hlt();
 }
@@ -69,7 +67,7 @@ void task_switchsub(){
 }
 
 Task *initTasking(TIMER *timer){
-	taskctl=(TASKCTRL*)memman->alloc_4k(sizeof(TASKCTRL));
+	taskctl=(TASKCTRL*)malloc(sizeof(TASKCTRL));
 	memset(taskctl,0,sizeof(TASKCTRL));
 	for(int i=0;i<MAX_TASKS;i++)
 		taskctl->tasks0[i].stat=EMPTY;
@@ -120,7 +118,7 @@ Task *TASKCTRL::alloc(){
 			task->regs.edi=0;
 			task->regs.eflags=taskctl->tasks0[0].regs.eflags;
 			task->regs.cr3=taskctl->tasks0[0].regs.cr3;
-			task->stackbottom=memman->alloc_4k(TASK_STACK_SIZE);
+			task->stackbottom=malloc(TASK_STACK_SIZE);
 			task->regs.esp=task->stackbottom+TASK_STACK_SIZE-8;
 			return task;
 		}
@@ -164,7 +162,7 @@ void sleepTask(){
 void exitTask(){
 	auto task=task_now();
 	task_remove(task);
-	memman->free_4k(task->regs.esp,TASK_STACK_SIZE);
+	mfree(task->regs.esp,TASK_STACK_SIZE);
 	task->stat=EMPTY;
 	task_switchsub();
 	switchTask(&task->regs,&task_now()->regs);
@@ -176,7 +174,7 @@ void killTask(Task *task){
 		exitTask();
 	}else{
 		task_remove(task);
-		memman->free_4k(task->stackbottom,TASK_STACK_SIZE);
+		mfree(task->stackbottom,TASK_STACK_SIZE);
 		task->stat=EMPTY;
 	}
 }

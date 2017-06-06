@@ -31,4 +31,5 @@ public:
 	void regist(TIMER *timer);
 };
 void init_pit();
+TIMER *timer_alloc();
 void timer_handler(registers_t regs);
