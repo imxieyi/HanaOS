@@ -123,18 +123,9 @@ void GRAPHICS::window_active(){
 }
 
 void GRAPHICS::init_mouse_cursor(){
-    uint32_t pixel=0;
-    uint8_t r,g,b,a;
 	for(int y=0;y<height;y++)
-		for(int x=0;x<width;x++){
-            pixel=cursor[y+x*height];
-            r=(pixel&0xff0000)>>16;
-            g=(pixel&0xff00)>>8;
-            b=pixel&0xff;
-			a=0xff;
-			if(r==0xff&&g==0x00&&b==0x00)a=0;
-			vram[y*width+x]=VGA_RGBPACK(r,g,b,a);
-        }
+		for(int x=0;x<width;x++)
+			vram[y*width+x]=mouse_platte[cursor[y+x*height]];
 }
 
 void GRAPHICS::make_textbox(int x0, int y0,int x1, int y1, uint32_t bgcolor){
