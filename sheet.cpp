@@ -34,7 +34,6 @@ SHEET *SHEETCTRL::allocsheet(int xsize,int ysize){
 			SHEET *sht=&sheets0[i];
 			sht->graphics=(GRAPHICS *)malloc(sizeof(GRAPHICS));
 			uint32_t *buf=(uint32_t *)malloc(xsize*ysize*4);
-			memset(buf,0,xsize*ysize*4);
 			if(buf==0){
 				return 0;
 			}

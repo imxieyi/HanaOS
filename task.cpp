@@ -68,7 +68,6 @@ void task_switchsub(){
 
 Task *initTasking(TIMER *timer){
 	taskctl=(TASKCTRL*)malloc(sizeof(TASKCTRL));
-	memset(taskctl,0,sizeof(TASKCTRL));
 	for(int i=0;i<MAX_TASKS;i++)
 		taskctl->tasks0[i].stat=EMPTY;
 	auto task=taskctl->alloc();
@@ -177,4 +176,10 @@ void killTask(Task *task){
 		mfree(task->stackbottom,TASK_STACK_SIZE);
 		task->stat=EMPTY;
 	}
+	if(task->fifo!=NULL){
+		task->fifo->remove();
+		mfree((uintptr_t)task->fifo,sizeof(FIFO));
+	}
+	if(task->callback!=NULL)
+		task->callback->destroy();
 }

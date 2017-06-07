@@ -57,6 +57,10 @@ public:
     }
 
     ~LambdaContainer() {
+        //mfree((uintptr_t)buf,size);
+    }
+
+    void destroy() {
         mfree((uintptr_t)buf,size);
     }
 };

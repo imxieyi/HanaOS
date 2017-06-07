@@ -44,7 +44,8 @@ void TIMERCTRL::interrupt(){
 	for(;;){
 		if(timer->timeout>count)break;
 		if(timer!=mt_timer){
-			timer->push();
+			if(!timer->fifo->destroyed)
+				timer->push();
 		}else{
 			timer->flag=ALLOC;
 			ts=1;

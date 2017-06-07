@@ -26,6 +26,7 @@ void FIFO::init(int size,Task *task){
 
 void FIFO::remove(){
 	mfree((uintptr_t)buf,size*4);
+	destroyed=true;
 	return;
 }
 

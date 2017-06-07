@@ -49,6 +49,7 @@ void close_window(SHEET *sht){
 
 void api_loopforever(LambdaContainer func,int interval){
 	auto task=task_now();
+	task->callback=&func;
 	auto fifo=(FIFO*)malloc(sizeof(FIFO));
 	fifo->init(128,task);
 	task->fifo=fifo;
@@ -59,8 +60,8 @@ void api_loopforever(LambdaContainer func,int interval){
 			sleepTask();
 		}else{
 			fifo->get();
-			func();
 			timer->set(interval);
+			func();
 		}
 	}
 }

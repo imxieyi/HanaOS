@@ -147,7 +147,9 @@ int MEMMAN::free_4k(unsigned int addr,unsigned int size){
 }
 
 uintptr_t malloc(uint32_t size){
-	return memman->alloc_4k(size);
+	auto t=memman->alloc_4k(size);
+	hanastd::memset((uintptr_t)t,0,size);
+	return t;
 }
 
 int mfree(uintptr_t addr,uint32_t size){

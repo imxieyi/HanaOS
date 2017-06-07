@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 #include "timer.hpp"
+#include "lambda_container.hpp"
 
 #define TASK_STACK_SIZE (64*1024)
 
@@ -17,6 +18,7 @@ typedef struct Task {
 	int level,priority;
 	uint32_t stackbottom;
 	FIFO *fifo;
+	LambdaContainer *callback=NULL;
 } __attribute__((packed)) Task;
 
 #define MAX_TASKS 1000

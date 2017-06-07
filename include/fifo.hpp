@@ -3,9 +3,10 @@
 #define FLAGS_OVERRUN	0x0001
 class FIFO {
 private:
+	int *buf;
 	int r,w,size,free,flags;
 public:
-	int *buf;
+	bool destroyed=false;
 	struct Task *task;
 	void init(int size);
 	void init(int size,Task *task);
