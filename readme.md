@@ -1,10 +1,14 @@
-# 操作系统 (CS302) Project —— kernel
+# 操作系统 (CS302) Project —— HanaOS
 
-嗯。装逼狗牌：[![Build Status](https://travis-ci.org/imxieyi/os_project_kernel.svg?branch=master)](https://travis-ci.org/imxieyi/os_project_kernel)
+嗯。装逼狗牌：[![Build Status](https://travis-ci.org/imxieyi/HanaOS.svg?branch=master)](https://travis-ci.org/imxieyi/HanaOS)
+
+## 完结撒花🎉
 
 生命不息，挖坑不止。
 
 尝试用更现代化的方式实现OSASK类似的简易操作系统（伪）。
+
+亮瞎钛合金狗眼的高分辨率版：[https://github.com/imxieyi/HanaOS/tree/high_resolution](https://github.com/imxieyi/HanaOS/tree/high_resolution)
 
 必须用32位MBR的grub2生成镜像，否则无法获得正确的显存地址（这个坑就不要去踩了，无解），轻则切换分辨率后无显示，重则导致虚拟机崩溃。
 
@@ -39,7 +43,7 @@ App列表：
  - crash3（跳转0xffffffff异常）
  - time（输出当前时间）
  - help（输出App列表）
- - binaryclock
+ - bclock（二进制时钟）
 
 运行截图：
 
