@@ -1,6 +1,10 @@
-# 操作系统 (CS302) Project —— kernel
+# 操作系统 (CS302) Project —— HanaOS
 
 嗯。装逼狗牌：[![Build Status](https://travis-ci.org/imxieyi/os_project_kernel.svg?branch=master)](https://travis-ci.org/imxieyi/os_project_kernel)
+
+此分支为1920*1080分辨率，同时更换了一张壁纸。
+
+壁纸来源：[https://www.pixiv.net/member_illust.php?mode=medium&illust_id=62914760](https://www.pixiv.net/member_illust.php?mode=medium&illust_id=62914760)
 
 生命不息，挖坑不止。
 

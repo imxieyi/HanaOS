@@ -22,7 +22,7 @@ void task_console(void *arg){
 	auto sht=(SHEET*)arg;
 	sht->graphics->init_window("Console");
 	sht->graphics->make_textbox(8,30,632,472,CONSOLE_BG,true);
-	sht->slide(50,50);
+	sht->slide(200,200);
 	sht->updown(2);
 	auto task=task_now();
 	auto fifo=(FIFO*)malloc(sizeof(FIFO));

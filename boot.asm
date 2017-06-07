@@ -10,8 +10,8 @@ MAGIC       equ 0x1BADB002
 CHECKSUM    equ -(MAGIC + FLAGS)
 ; multiboot显示设置
 G_MODE		equ 0
-G_WIDTH		equ 1024
-G_HEIGHT	equ 768
+G_WIDTH		equ 1920
+G_HEIGHT	equ 1080
 G_DEPTH		equ 32
 
 section .multiboot
