@@ -58,7 +58,7 @@ extern "C" void kernel_main(multiboot_info_t *hdr,uint32_t magic)
 	mouse_sht->updown(3);
 	
 	//Console Window
-	auto con_sht=shtctl_alloc(640,480);
+	auto con_sht=shtctl_alloc(800,600);
 	dwm_init(con_sht);
 
 	//Multitasking

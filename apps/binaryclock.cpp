@@ -82,7 +82,7 @@ void task_binaryclock(void *arg) {
 void *app_binaryclock(char *buffer, uint32_t *cbuffer, char *param) {
     STDOUT out(buffer,cbuffer);
     out.printf(0xffffff,"Hello world! Frank!\n");
-    auto task=createTask("binaryclock",&task_binaryclock,NULL);
+    auto task=createTask("bclock",&task_binaryclock,NULL);
     //auto time=rtc_time();
     //out.printf(0xffffff,"hour:%d minute: %d second: %d\n",time.hour,time.minute,time.second);
     task_run(task,2,1);

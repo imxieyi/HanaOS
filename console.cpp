@@ -15,13 +15,13 @@
 #include "hanastd.hpp"
 using namespace hanastd;
 
-#define CONSOLE_BG 0xaa2c3a44
+#define CONSOLE_BG 0xcc2c3a44
 #define FONT_COLOR 0x74e3ff
 #define ERROR_COLOR 0xffafaf
 void task_console(void *arg){
 	auto sht=(SHEET*)arg;
 	sht->graphics->init_window("Console");
-	sht->graphics->make_textbox(8,30,632,472,CONSOLE_BG,true);
+	sht->graphics->make_textbox(8,30,sht->bxsize-8,sht->bysize-8,CONSOLE_BG,true);
 	sht->slide(200,200);
 	sht->updown(2);
 	auto task=task_now();
