@@ -1,58 +1,11 @@
-# 操作系统 (CS302) Project —— HanaOS
+# Operating System(CS302) Project —— HanaOS
 
-嗯。装逼狗牌：[![Build Status](https://travis-ci.org/imxieyi/os_project_kernel.svg?branch=master)](https://travis-ci.org/imxieyi/os_project_kernel)
+This branch has 1920*1080 resolution with a different wallpaper.
 
-此分支为1920*1080分辨率，同时更换了一张壁纸。
+Source of wallpaper:[https://www.pixiv.net/member_illust.php?mode=medium&illust_id=62914760](https://www.pixiv.net/member_illust.php?mode=medium&illust_id=62914760)
 
-壁纸来源：[https://www.pixiv.net/member_illust.php?mode=medium&illust_id=62914760](https://www.pixiv.net/member_illust.php?mode=medium&illust_id=62914760)
+For other information including compile dependencies, please refer to branch [master](https://github.com/imxieyi/HanaOS).
 
-生命不息，挖坑不止。
+Screenshot:
 
-尝试用更现代化的方式实现OSASK类似的简易操作系统（伪）。
-
-必须用32位MBR的grub2生成镜像，否则无法获得正确的显存地址（这个坑就不要去踩了，无解），轻则切换分辨率后无显示，重则导致虚拟机崩溃。
-
-**如果在VMware中运行，请在.vmx文件中加入rtc.diffFromUTC = 0，否则时间会有偏移。**
-
-**依赖工具：** nasm, g++-6, g++-6-multilib, make, xorriso, mtools, qemu, grub-common
-
-在64位或EFI引导的系统上需要安装grub-pc才能生成iso镜像。
-
-bgimg.hpp就是张图片而已，编译完成后要占2M的空间，应该会被link到.rodata部分，嫌占空间删掉就得了。
-
-5-1:折腾了大半天，中途好几次差点放弃，终于把中断处理实现了。顺便吐槽一下kernel的中断处理实现方法跟bootloader的区别非常大，OSASK的代码没啥参考价值。
-
-5-3:花了一晚上调试鼠标后来发现vmware里面运行qemu有坑（手动喷血），原因不明。事实上OSASK的鼠标驱动放到kernel里没任何问题。
-
-5-4:趁早上最清醒的时候调试，很快找到内存越界的原因，之前只有一个图层的时候用fb_stride32计算显存缓冲区偏移量，而现在有多个图层后继续这么算就会越界到其他图层的缓冲区，导致图层叠加出现问题。
-
-5-25:OSASK的多任务实现方式在kernel中无法使用，所以多任务代码基本上参考[OSDev的教程](http://wiki.osdev.org/Kernel_Multitasking)，同时加入了删除任务的API。
-
-书上18天之后就把书扔了，后面的功能完全从头实现。
-
-App列表：
- - free（内存信息）
- - hello（卖萌）
- - poweroff（关机）
- - reboot（重启）
- - tasklist（任务列表）
- - window（测试窗口）
- - nyancat（没错就是彩虹猫）
- - crash1（跳转0x0异常）
- - crash2（除以0）
- - crash3（跳转0xffffffff异常）
- - time（输出当前时间）
- - help（输出App列表）
- - binaryclock
-
-运行截图：
-
-![](imgs/screenshot1.png)
-
-![](imgs/screenshot2.png)
-
-![](imgs/screenshot3.png)
-
-![](imgs/screenshot4.png)
-
-![](imgs/screenshot5.png)
+![](imgs/screenshot.png)
