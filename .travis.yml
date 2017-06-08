@@ -27,4 +27,4 @@ deploy:
   file: build/hanaos.iso
   skip_cleanup: true
   on:
-    repo: imxieyi/os_project_kernel
+    repo: imxieyi/HanaOS

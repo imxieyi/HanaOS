@@ -1,51 +1,87 @@
-# 操作系统 (CS302) Project —— HanaOS
+# Operating System(CS302) Project —— HanaOS
 
-嗯。装逼狗牌：[![Build Status](https://travis-ci.org/imxieyi/HanaOS.svg?branch=master)](https://travis-ci.org/imxieyi/HanaOS)
+[![Build Status](https://travis-ci.org/imxieyi/HanaOS.svg?branch=master)](https://travis-ci.org/imxieyi/HanaOS)
 
-## 完结撒花🎉
+**The final presentation turned out to be perfect!🎉**
 
-生命不息，挖坑不止。
+1920x1080 resolution branch: [https://github.com/imxieyi/HanaOS/tree/high_resolution](https://github.com/imxieyi/HanaOS/tree/high_resolution)
 
-尝试用更现代化的方式实现OSASK类似的简易操作系统（伪）。
+## Introduction
 
-亮瞎钛合金狗眼的高分辨率版：[https://github.com/imxieyi/HanaOS/tree/high_resolution](https://github.com/imxieyi/HanaOS/tree/high_resolution)
+This project is aimed to make an simple Operating System like [OSASK](http://osask.jp) using more recent technologies. With only 2 months to develop, I have skipped many critical parts for an traditional operating systems like paging and user mode. So it may easily crash while running. Since the final presentation has finished, I will stop development right here.
 
-必须用32位MBR的grub2生成镜像，否则无法获得正确的显存地址（这个坑就不要去踩了，无解），轻则切换分辨率后无显示，重则导致虚拟机崩溃。
+## Feature
 
-**如果在VMware中运行，请在.vmx文件中加入rtc.diffFromUTC = 0，否则时间会有偏移。**
+1. Most of code in C++14 instead of pure C, which is rare for such operating systems.
 
-**依赖工具：** nasm, g++-6, g++-6-multilib, make, xorriso, mtools, qemu, grub-common
+2. GRUB2 [Multiboot](https://www.gnu.org/software/grub/manual/multiboot/multiboot.html) specification.
 
-在64位或EFI引导的系统上需要安装grub-pc才能生成iso镜像。
+3. 32bit color, up to 4k resolution with appropriate configurations.
 
-bgimg.hpp就是张图片而已，编译完成后要占2M的空间，应该会被link到.rodata部分，嫌占空间删掉就得了。
+4. Graphic-rich console with transparent background.
 
-5-1:折腾了大半天，中途好几次差点放弃，终于把中断处理实现了。顺便吐槽一下kernel的中断处理实现方法跟bootloader的区别非常大，OSASK的代码没啥参考价值。
+5. Multi-tasking and support for several instances for one application.
 
-5-3:花了一晚上调试鼠标后来发现vmware里面运行qemu有坑（手动喷血），原因不明。事实上OSASK的鼠标驱动放到kernel里没任何问题。
+6. Easy-to-use API including support for lambda expressions.
 
-5-4:趁早上最清醒的时候调试，很快找到内存越界的原因，之前只有一个图层的时候用fb_stride32计算显存缓冲区偏移量，而现在有多个图层后继续这么算就会越界到其他图层的缓冲区，导致图层叠加出现问题。
+## List of apps
 
-5-25:OSASK的多任务实现方式在kernel中无法使用，所以多任务代码基本上参考[OSDev的教程](http://wiki.osdev.org/Kernel_Multitasking)，同时加入了删除任务的API。
+ - free (memory info)
+ - hello (hello world!)
+ - poweroff (ACPI shutdown)
+ - reboot
+ - tasklist (list of running tasks)
+ - window (counter)
+ - nyancat (NYAN!NYAN!NYAN!)
+ - crash1 (jump to 0x0)
+ - crash2 (divide by 0)
+ - crash3 (jump to 0xffffffff)
+ - time (read RTC time)
+ - help (list of apps)
+ - bclock (binary clock)
 
-书上18天之后就把书扔了，后面的功能完全从头实现。
+## Build Environment
 
-App列表：
- - free（内存信息）
- - hello（卖萌）
- - poweroff（关机）
- - reboot（重启）
- - tasklist（任务列表）
- - window（测试窗口）
- - nyancat（没错就是彩虹猫）
- - crash1（跳转0x0异常）
- - crash2（除以0）
- - crash3（跳转0xffffffff异常）
- - time（输出当前时间）
- - help（输出App列表）
- - bclock（二进制时钟）
+Ubuntu 16.04 or above is recommended. If you cannot successfully set up the environment, please refer to [.travis.yml](https://github.com/imxieyi/HanaOS/blob/master/.travis.yml) which runs smoothly in Travis-CI containers.
 
-运行截图：
+## Dependencies
+
+Install through apt:
+
+```
+sudo apt update
+sudo apt install nasm g++-6 g++-6-multilib make xorriso mtools qemu grub-common grub-pc
+```
+
+## Build
+
+Build .iso image:
+
+```
+make iso
+```
+
+The result file is build/hanaos.iso
+
+## Run
+
+Run in qemu (You must manually install qemu first):
+
+```
+make run
+```
+
+If you want to run it in VMware, you are required to add *rtc.diffFromUTC = 0* in the .vmx file since VMware pass local time instead of UTC time as hardware time to virtual machines by default.
+
+## Some explanations
+
+1. What inside [bgimg.hpp](https://github.com/imxieyi/HanaOS/blob/master/include/bgimg.hpp) is just a wallpaper which takes up 3MB in the kernel. In the 1920x1080 branch it even takes up 8MB. However the kernel is only ~70KB without it. But it does not affect performance. Feel free to modify it if you don't like it.
+
+2. With the support for alpha color blending, moving a large window like console consumes huge amounts of CPU but still slow. So please be careful and DO NOT move your mouse too fast while dragging windows.
+
+3. Apps are also linked with kernel since there is no file systems.
+
+## Screenshots
 
 ![](imgs/screenshot1.png)
 
@@ -56,3 +92,9 @@ App列表：
 ![](imgs/screenshot4.png)
 
 ![](imgs/screenshot5.png)
+
+## Credit
+ - [OSDev](http://wiki.osdev.org/Main_Page)
+ - [OSASK](http://osask.jp)
+ - [StackOverflow](https://stackoverflow.com/)
+ - Wallpaper: [https://imgur.com/15nOF7J](https://imgur.com/15nOF7J)
